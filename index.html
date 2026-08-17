@@ -1,0 +1,5333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="rcm-google-sync" content="google-only-jsonp-form-v2">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Rotary Club of Makati - Wine Inventory</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f6f8;
+    color: #222;
+}
+
+header {
+    background: #1f4e91;
+    color: white;
+    padding: 18px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 25px;
+}
+
+header p {
+    margin: 5px 0 0;
+    opacity: .9;
+}
+
+.container {
+    max-width: 1450px;
+    margin: auto;
+    padding: 22px;
+}
+
+.section {
+    background: white;
+    border-radius: 10px;
+    padding: 22px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+
+.section h2 {
+    margin-top: 0;
+    color: #1f4e91;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+    margin-bottom: 22px;
+}
+
+.card {
+    background: white;
+    border-radius: 10px;
+    padding: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+
+.card h3 {
+    font-size: 13px;
+    color: #666;
+    margin: 0;
+}
+
+.number {
+    font-size: 30px;
+    font-weight: bold;
+    color: #1f4e91;
+    margin-top: 7px;
+}
+
+.as-of-date {
+    margin-top: 5px;
+    font-size: 11px;
+    color: #777;
+    font-weight: normal;
+}
+
+form {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+}
+
+.full {
+    grid-column: 1 / -1;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+button {
+    border: 0;
+    border-radius: 6px;
+    padding: 10px 15px;
+    background: #1f4e91;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: .9;
+}
+
+.green {
+    background: #27834a;
+}
+
+.orange {
+    background: #d67b19;
+}
+
+.red {
+    background: #a52b2b;
+}
+
+.gray {
+    background: #666;
+}
+
+.small-btn {
+    padding: 6px 9px;
+    font-size: 12px;
+}
+
+.button-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 950px;
+}
+
+th {
+    background: #1f4e91;
+    color: white;
+    padding: 10px;
+    text-align: left;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #e5e5e5;
+    vertical-align: top;
+}
+
+tr:hover {
+    background: #f8fafc;
+}
+
+.low {
+    color: #b00000;
+    font-weight: bold;
+}
+
+.good {
+    color: #27834a;
+    font-weight: bold;
+}
+
+.badge {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.badge-open {
+    background: #fff0d9;
+    color: #9a5b00;
+}
+
+.badge-final {
+    background: #dff4e7;
+    color: #176536;
+}
+
+.empty {
+    text-align: center;
+    color: #888;
+    padding: 25px;
+}
+
+.prep-items {
+    margin-top: 15px;
+}
+
+.prep-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr auto;
+    gap: 8px;
+    margin-bottom: 8px;
+    align-items: center;
+}
+
+.report-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.report-buttons .purple,
+.specific-event-report .purple {
+    background: #6f42c1;
+    color: #fff;
+}
+
+.note {
+    background: #eef5ff;
+    border-left: 4px solid #1f4e91;
+    padding: 12px;
+    margin-bottom: 15px;
+}
+
+.warning {
+    background: #fff4df;
+    border-left: 4px solid #d67b19;
+    padding: 12px;
+    margin-bottom: 15px;
+}
+
+.search-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.search-row input,
+.search-row select {
+    max-width: 280px;
+}
+
+@media(max-width: 1100px) {
+
+    .dashboard {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    form {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media(max-width: 650px) {
+
+    .dashboard {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    form {
+        grid-template-columns: 1fr;
+    }
+
+    .prep-row {
+        grid-template-columns: 1fr;
+    }
+
+    .container {
+        padding: 10px;
+    }
+
+}
+
+
+.footer-credit{text-align:center;padding:20px 10px 28px;color:#666;font-size:13px;line-height:1.6}.footer-credit .system-name{font-weight:bold;color:#1f4e91;font-size:15px}.footer-credit .developer{font-weight:bold;color:#222}
+
+.system-branding {
+    position: absolute;
+    top: 10px;
+    right: 18px;
+    text-align: right;
+    font-size: 12px;
+    line-height: 1.35;
+    color: rgba(255,255,255,.95);
+}
+.system-branding .system-name {
+    font-weight: bold;
+    font-size: 14px;
+}
+.system-branding .developer {
+    font-weight: bold;
+}
+@media (max-width: 650px) {
+    .system-branding {
+        position: static;
+        text-align: center;
+        margin-top: 10px;
+    }
+}
+
+
+/* Clickable wine details */
+.wine-link {
+    color: #1f4e91;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+}
+.wine-link:hover {
+    text-decoration-style: solid;
+}
+.wine-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    inset: 0;
+    background: rgba(0,0,0,.55);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+.wine-modal.show {
+    display: flex;
+}
+.wine-modal-card {
+    width: min(620px, 100%);
+    max-height: 85vh;
+    overflow-y: auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.25);
+    padding: 24px;
+    position: relative;
+}
+.wine-modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 50%;
+    background: #eee;
+    color: #333;
+    font-size: 20px;
+}
+.wine-modal-close:hover {
+    background: #ddd;
+}
+.wine-detail-title {
+    margin: 0 45px 4px 0;
+    color: #1f4e91;
+}
+.wine-detail-type {
+    color: #666;
+    margin-bottom: 18px;
+}
+.wine-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+.wine-detail-box {
+    background: #f5f7fa;
+    border-radius: 8px;
+    padding: 12px;
+}
+.wine-detail-box.full {
+    grid-column: 1 / -1;
+}
+.wine-detail-label {
+    font-size: 12px;
+    font-weight: bold;
+    color: #666;
+    margin-bottom: 5px;
+}
+.wine-detail-value {
+    white-space: pre-wrap;
+    line-height: 1.5;
+}
+@media(max-width:650px) {
+    .wine-detail-grid {
+        grid-template-columns: 1fr;
+    }
+    /* RECEIVING FORM ATTACHMENT */
+.wine-detail-box.full {
+        grid-column: auto;
+    }
+}
+.receiving-attachment {
+    margin-top: 8px;
+}
+.attachment-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #eef5ff;
+    color: #1f4e91;
+    border: 1px solid #c9dcf7;
+    border-radius: 20px;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: bold;
+}
+.attachment-input {
+    display: none;
+}
+
+
+/* ============================================================
+   ADMIN PORTAL LOGIN
+   ============================================================ */
+.admin-portal-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:20000;
+    background:rgba(10,25,45,.72);
+    backdrop-filter:blur(5px);
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+.admin-portal-overlay.show{display:flex;}
+.admin-portal-card{
+    width:min(430px,100%);
+    background:#fff;
+    border-radius:18px;
+    padding:30px;
+    box-shadow:0 20px 70px rgba(0,0,0,.35);
+    position:relative;
+}
+.admin-portal-card h2{
+    margin:0 0 6px;
+    color:#1f4e91;
+    text-align:center;
+}
+.admin-portal-subtitle{
+    text-align:center;
+    color:#666;
+    margin:0 0 22px;
+    font-size:13px;
+}
+.admin-portal-logo{
+    width:64px;
+    height:64px;
+    margin:0 auto 12px;
+    border-radius:50%;
+    background:#1f4e91;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:30px;
+}
+.admin-portal-field{margin-bottom:14px;}
+.admin-portal-field label{margin-bottom:6px;}
+.admin-portal-field input{
+    width:100%;
+    padding:12px 13px;
+    border:1px solid #cfd6df;
+    border-radius:8px;
+    font-size:15px;
+}
+.admin-portal-field input:focus{
+    outline:none;
+    border-color:#1f4e91;
+    box-shadow:0 0 0 3px rgba(31,78,145,.12);
+}
+.admin-portal-login{
+    width:100%;
+    margin-top:5px;
+    padding:12px 15px;
+    font-size:15px;
+}
+.admin-portal-cancel{
+    width:100%;
+    margin-top:8px;
+    background:#666;
+}
+.admin-portal-error{
+    display:none;
+    background:#fff0f0;
+    border:1px solid #efb5b5;
+    color:#a52b2b;
+    border-radius:8px;
+    padding:10px;
+    margin-bottom:14px;
+    font-size:13px;
+}
+.admin-portal-footer{
+    margin-top:16px;
+    text-align:center;
+    font-size:11px;
+    color:#888;
+}
+/* LOGIN-FIRST GATE: main application stays hidden until admin login */
+body.admin-login-first > *:not(#adminPortalOverlay) {
+    visibility: hidden !important;
+}
+body.admin-login-first {
+    overflow: hidden;
+}
+#adminPortalOverlay.login-required {
+    display: flex !important;
+}
+
+
+/* ============================================================
+   GUEST VIEW MODE
+   Guests may view data, open attachments and print only.
+   ============================================================ */
+.guest-mode .guest-hide,
+.guest-mode button[onclick*="add"],
+.guest-mode button[onclick*="save"],
+.guest-mode button[onclick*="delete"],
+.guest-mode button[onclick*="edit"],
+.guest-mode button[onclick*="restock"],
+.guest-mode button[onclick*="stock"],
+.guest-mode .admin-only {
+    display:none !important;
+}
+.guest-mode input:not([readonly]),
+.guest-mode select,
+.guest-mode textarea {
+    pointer-events:none !important;
+    background:#f5f5f5 !important;
+}
+.guest-banner{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    z-index:19000;
+    background:#285a8f;
+    color:#fff;
+    text-align:center;
+    padding:7px 12px;
+    font-size:12px;
+    font-weight:600;
+}
+.guest-mode .guest-banner{display:block;}
+.guest-mode .admin-login-first{display:none;}
+
+
+.guest-usage-modal{
+    display:none;position:fixed;inset:0;z-index:21000;
+    background:rgba(0,0,0,.65);padding:25px;overflow:auto;
+}
+.guest-usage-modal.show{display:block;}
+.guest-usage-card{
+    background:#fff;max-width:1000px;margin:20px auto;padding:20px;
+    border-radius:12px;box-shadow:0 15px 50px rgba(0,0,0,.3);
+}
+
+
+.guest-event-usage-panel{
+    display:none;
+    margin:12px 0;
+    padding:14px;
+    border:1px solid #b8cbe0;
+    border-radius:10px;
+    background:#f5f9fd;
+}
+.guest-mode .guest-event-usage-panel{display:flex;}
+.guest-event-usage-panel select{
+    min-width:280px;
+    padding:9px;
+    border:1px solid #b8cbe0;
+    border-radius:6px;
+    background:#fff !important;
+    pointer-events:auto !important;
+}
+.guest-event-usage-panel button{
+    padding:9px 13px;
+    border:0;
+    border-radius:6px;
+    cursor:pointer;
+    background:#285a8f;
+    color:#fff;
+}
+
+
+.guest-mode .guest-report-access {
+    display:flex !important;
+}
+.guest-mode #reportEventSelect {
+    display:block !important;
+    visibility:visible !important;
+    opacity:1 !important;
+    pointer-events:auto !important;
+    background:#fff !important;
+}
+.guest-mode .guest-report-access button {
+    display:inline-block !important;
+    visibility:visible !important;
+    pointer-events:auto !important;
+}
+
+</style>
+</head>
+
+
+<script>
+(function () {
+    try {
+        var loggedIn = sessionStorage.getItem("rcmWineAdminUnlocked") === "1";
+        if (!loggedIn) {
+            document.documentElement.classList.add("admin-login-required");
+        }
+    } catch (e) {
+        document.documentElement.classList.add("admin-login-required");
+    }
+})();
+</script>
+
+
+<body class="admin-login-first">
+<div class="guest-banner">👤 GUEST VIEW — View, Open Attachments & Print Only <button type="button" onclick="logoutGuest()" style="margin-left:10px;padding:3px 8px;border:0;border-radius:5px;cursor:pointer;">Exit Guest</button></div>
+
+<!-- ============================================================
+     ADMIN PORTAL
+     ============================================================ -->
+<div id="adminPortalOverlay" class="admin-portal-overlay login-required" aria-hidden="false">
+    <div class="admin-portal-card" role="dialog" aria-modal="true" aria-labelledby="adminPortalTitle">
+        <div class="admin-portal-logo">🔐</div>
+        <h2 id="adminPortalTitle">Admin Portal</h2>
+        <p class="admin-portal-subtitle">WineInventory1.0 — Administrator Login</p>
+
+        <div id="adminPortalError" class="admin-portal-error"></div>
+
+        <form id="adminLoginForm" autocomplete="off">
+            <div class="admin-portal-field">
+                <label for="adminUsername">Username</label>
+                <input id="adminUsername" type="text" autocomplete="username"
+                       placeholder="Enter admin username" required>
+            </div>
+
+            <div class="admin-portal-field">
+                <label for="adminPassword">Password</label>
+                <input id="adminPassword" type="password" autocomplete="current-password"
+                       placeholder="Enter admin password" required>
+            </div>
+
+            <button class="admin-portal-login" type="submit">🔓 Login to Admin Portal</button>
+            <button id="guestLoginButton" class="admin-portal-cancel" type="button">👤 Continue as Guest</button>
+
+        </form>
+
+        <button id="adminPortalLogout" class="admin-portal-cancel" type="button"
+                style="display:none;" onclick="logoutAdmin()">Logout</button>
+
+        <div class="admin-portal-footer">
+            Authorized administrators only
+        </div>
+    </div>
+</div>
+
+
+<header style="position:relative;">
+<h1>🍷 Wine Inventory & Event Management</h1>
+    <p>Rotary Club of Makati</p>
+
+<div class="system-branding">
+    <div class="system-name">WineInventory1.0</div>
+    <div>System developed by <span class="developer">Aaron Glo</span></div>
+    <div>© 2026 Rotary Club of Makati</div>
+</div>
+
+</header>
+
+<div class="container">
+
+    <!-- DASHBOARD -->
+
+    <div class="dashboard">
+
+        <div class="card">
+            <h3>Available Wine</h3>
+            <div class="number" id="dashAvailable">0</div>
+            <div id="dashAvailableAsOf" class="as-of-date">As of today</div>
+        </div>
+
+        <div class="card">
+            <h3>Total Used</h3>
+            <div class="number" id="dashUsed">0</div>
+        </div>
+
+        <div class="card">
+            <h3>Events</h3>
+            <div class="number" id="dashEvents">0</div>
+        </div>
+
+        <div class="card">
+            <h3>Total Wine Received</h3>
+            <div class="number" id="dashReceived">0</div>
+        </div>
+
+    </div>
+
+
+    <!-- REPORTS -->
+
+    <div class="section">
+
+        <h2>📊 Reports & Export</h2>
+
+        <div class="report-buttons">
+
+            <button onclick="printInventoryReport()">
+                🖨️ Print Wine Inventory Report
+            </button>
+
+            <button onclick="printAllEventsReport()">
+                🖨️ Print Event Usage Report
+            </button>
+
+            <button class="purple" onclick="focusEventReportSelector()">
+                🍷 Specific Event Usage
+            </button>
+
+            <button class="green" onclick="exportCSV()">
+                📥 Export Excel / CSV
+            </button>
+
+            <button class="gray" onclick="backupData()">
+                💾 Backup Data
+            </button>
+
+        </div>
+
+        <div class="specific-event-report guest-report-access" style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+            <label for="reportEventSelect" style="font-weight:700; margin:0;">
+                📋 Select Event for Specific Usage Report:
+            </label>
+            <select id="reportEventSelect" style="min-width:300px; flex:1; max-width:520px;">
+                <option value="">Select an event...</option>
+            </select>
+            <button class="purple" onclick="printSelectedEventUsage()">
+                🖨️ Print Selected Event
+            </button>
+            <button class="small-btn" onclick="viewSelectedEventAttachment()" title="View the receiving form attached to the selected event">
+                📎 View Attachment
+            </button>
+        </div>
+
+    </div>
+
+
+
+    <!-- GOOGLE DRIVE / SHEETS SYNC (HIDDEN) -->
+    <div id="googleSyncSection" class="section" style="display:none;">
+        <h2>☁️ Google Drive / Sheets Sync</h2>
+        <div class="note">
+            Inventory data is automatically encoded in the browser and sent to your
+            Google Sheet. You do not need to copy or paste CSV/data. You only need
+            to enter the Google Apps Script Web App URL once.
+        </div>
+        <div class="button-row">
+            <button type="button" class="green" onclick="googleSyncSave()">
+                ☁️ Sync to Google Sheet
+            </button>
+            <button type="button" onclick="googleSyncLoad()">
+                🔄 Load from Google Sheet
+            </button>
+            <button type="button" class="gray" onclick="googleSyncSetup()">
+                ⚙️ Set Google Connection
+            </button>
+            <span id="googleSyncStatus" class="badge badge-open">NOT CONNECTED</span>
+        </div>
+    </div>
+
+    <!-- ADD / RESTOCK -->
+
+    <div class="section">
+
+        <h2>📦 Add Wine / Restock</h2>
+
+        <form id="wineForm">
+
+            <div>
+                <label>Wine Name</label>
+
+                <input
+                    id="wineName"
+                    required
+                    placeholder="Example: Cabernet Sauvignon">
+            </div>
+
+            <div>
+                <label>Wine Type</label>
+
+                <select id="wineType">
+
+                    <option>Red Wine</option>
+                    <option>White Wine</option>
+                    <option>Rosé</option>
+                    <option>Sparkling Wine</option>
+                    <option>Champagne</option>
+                    <option>Prosecco</option>
+                    <option>Cava</option>
+                    <option>Port Wine</option>
+                    <option>Sherry</option>
+                    <option>Madeira</option>
+                    <option>Fortified Wine</option>
+                    <option>Dessert Wine</option>
+                    <option>Sake</option>
+                    <option>Beer</option>
+                    <option>Cider</option>
+                    <option>Mead</option>
+                    <option>Brandy</option>
+                    <option>Cognac</option>
+                    <option>Armagnac</option>
+                    <option>Whisky / Whiskey</option>
+                    <option>Bourbon</option>
+                    <option>Scotch Whisky</option>
+                    <option>Irish Whiskey</option>
+                    <option>Rye Whiskey</option>
+                    <option>Vodka</option>
+                    <option>Gin</option>
+                    <option>Rum</option>
+                    <option>Tequila</option>
+                    <option>Mezcal</option>
+                    <option>Absinthe</option>
+                    <option>Liqueur</option>
+                    <option>Vermouth</option>
+                    <option>Soju</option>
+                    <option>Baijiu</option>
+                    <option>Other</option>
+
+                </select>
+            </div>
+
+            <div>
+                <label>Quantity Received</label>
+
+                <input
+                    type="number"
+                    id="quantity"
+                    min="1"
+                    required>
+            </div>
+
+            <div>
+                <label>Stock Date</label>
+
+                <input
+                    type="date"
+                    id="stockDate"
+                    required>
+            </div>
+
+            <div>
+                <label>Stock By / Inventory By</label>
+
+                <input
+                    id="stockBy"
+                    required
+                    placeholder="Name of person adding stock">
+            </div>
+
+            <div>
+                <label>Donated By / Brought By</label>
+
+                <input
+                    id="donatedBy"
+                    placeholder="Name of person who donated or brought the wine">
+            </div>
+
+            <div>
+                <label>Supplier</label>
+
+                <input
+                    id="supplier"
+                    placeholder="Supplier">
+            </div>
+
+            <div>
+                <label>Batch / Reference</label>
+
+                <input
+                    id="batch"
+                    placeholder="Optional">
+            </div>
+
+            <div>
+                <label>Unit Price</label>
+
+                <input
+                    type="number"
+                    id="price"
+                    min="0"
+                    step="0.01">
+            </div>
+
+            <div>
+                <label>Minimum Stock Alert</label>
+
+                <input
+                    type="number"
+                    id="minimumStock"
+                    min="0"
+                    value="5">
+            </div>
+
+            <div class="full">
+
+                <label>Description / Notes</label>
+
+                <textarea
+                    id="wineDescription"
+                    placeholder="Description, tasting notes, storage notes, or other details about this stocked wine"></textarea>
+
+            </div>
+
+            <div class="full">
+
+                <button>
+                    ➕ Add Stock / Restock
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- INVENTORY -->
+
+    <div class="section">
+
+        <h2>🍾 Wine Inventory</h2>
+
+        <div class="search-row">
+
+            <input
+                id="inventorySearch"
+                placeholder="Search wine..."
+                oninput="renderInventory()">
+
+            <select
+                id="inventoryType"
+                onchange="renderInventory()">
+
+                <option value="">All Types</option>
+                <option>Red Wine</option>
+                <option>White Wine</option>
+                <option>Rosé</option>
+                <option>Sparkling Wine</option>
+                <option>Champagne</option>
+                <option>Prosecco</option>
+                <option>Cava</option>
+                <option>Port Wine</option>
+                <option>Sherry</option>
+                <option>Madeira</option>
+                <option>Fortified Wine</option>
+                <option>Dessert Wine</option>
+                <option>Sake</option>
+                <option>Beer</option>
+                <option>Cider</option>
+                <option>Mead</option>
+                <option>Brandy</option>
+                <option>Cognac</option>
+                <option>Armagnac</option>
+                <option>Whisky / Whiskey</option>
+                <option>Bourbon</option>
+                <option>Scotch Whisky</option>
+                <option>Irish Whiskey</option>
+                <option>Rye Whiskey</option>
+                <option>Vodka</option>
+                <option>Gin</option>
+                <option>Rum</option>
+                <option>Tequila</option>
+                <option>Mezcal</option>
+                <option>Absinthe</option>
+                <option>Liqueur</option>
+                <option>Vermouth</option>
+                <option>Soju</option>
+                <option>Baijiu</option>
+                <option>Other</option>
+
+            </select>
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Wine</th>
+                        <th>Type</th>
+                        <th>Received</th>
+                        <th>Used</th>
+                        <th>Available</th>
+                        <th>Last Stock Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="inventoryTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- CREATE EVENT -->
+
+    <div class="section">
+
+        <h2>🎉 Prepare Wine for Event</h2>
+
+        <div class="note">
+
+            <strong>How this works:</strong>
+
+            Add the event and the wines you are preparing.
+            The bottles are reserved for the event but are
+            not counted as "used" until the event is finalized.
+
+        </div>
+
+
+        <form id="eventForm">
+
+            <div>
+                <label>Event Name</label>
+
+                <input
+                    id="eventName"
+                    required
+                    placeholder="Example: Annual Fellowship">
+            </div>
+
+            <div>
+                <label>Event Date</label>
+
+                <input
+                    type="date"
+                    id="eventDate"
+                    required>
+            </div>
+
+            <div>
+                <label>Prepared By</label>
+
+                <input
+                    id="preparedBy"
+                    required
+                    placeholder="Name of person preparing">
+            </div>
+
+            <div class="full">
+
+                <label>Event Description</label>
+
+                <textarea
+                    id="eventDescription"
+                    placeholder="Event details"></textarea>
+
+            </div>
+
+        </form>
+
+
+        <div class="prep-items">
+
+            <h3>Wine to Prepare</h3>
+
+            <div id="prepRows"></div>
+
+            <button
+                type="button"
+                class="orange"
+                onclick="addPreparationRow()">
+
+                ➕ Add Wine
+
+            </button>
+
+        </div>
+
+
+        <br>
+
+        <button
+            type="button"
+            class="green"
+            onclick="saveEvent()">
+
+            💾 Save Event & Prepare Wine
+
+        </button>
+
+    </div>
+
+
+    <!-- EVENTS -->
+
+    <div class="section">
+
+        <h2>📋 Event Management</h2>
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Event</th>
+                        <th>Date</th>
+                        <th>Prepared By</th>
+                        <th>Received By</th>
+                        <th>Wine Prepared</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="eventsTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- RECEIVING FORM ATTACHMENT INPUT -->
+<input
+    type="file"
+    id="receivingAttachmentInput"
+    class="attachment-input"
+    accept=".pdf,.jpg,.jpeg,.png,.webp"
+    onchange="handleReceivingAttachment(event)">
+
+<!-- WINE DETAILS MODAL -->
+<div id="wineDetailsModal" class="wine-modal" onclick="closeWineDetails(event)">
+    <div class="wine-modal-card" onclick="event.stopPropagation()">
+        <button type="button" class="wine-modal-close" onclick="closeWineDetails()" aria-label="Close">×</button>
+        <h2 id="wineDetailName" class="wine-detail-title">Wine Details</h2>
+        <div id="wineDetailType" class="wine-detail-type"></div>
+
+        <div class="wine-detail-grid">
+            <div class="wine-detail-box">
+                <div class="wine-detail-label">Stock Available</div>
+                <div id="wineDetailAvailable" class="wine-detail-value"></div>
+            </div>
+            <div class="wine-detail-box">
+                <div class="wine-detail-label">Total Stock</div>
+                <div id="wineDetailReceived" class="wine-detail-value"></div>
+            </div>
+            <div class="wine-detail-box">
+                <div class="wine-detail-label">Total Used</div>
+                <div id="wineDetailUsed" class="wine-detail-value"></div>
+            </div>
+            <div class="wine-detail-box">
+                <div class="wine-detail-label">Supplier</div>
+                <div id="wineDetailSupplier" class="wine-detail-value"></div>
+            </div>
+            <div class="wine-detail-box">
+                <div class="wine-detail-label">Batch / Reference</div>
+                <div id="wineDetailBatch" class="wine-detail-value"></div>
+            </div>
+            <div class="wine-detail-box">
+                <div class="wine-detail-label">Unit Price</div>
+                <div id="wineDetailPrice" class="wine-detail-value"></div>
+            </div>
+            <div class="wine-detail-box">
+                <div class="wine-detail-label">Last Stock Date</div>
+                <div id="wineDetailDate" class="wine-detail-value"></div>
+            </div>
+            <div class="wine-detail-box">
+                <div class="wine-detail-label">Stock By / Inventory By</div>
+                <div id="wineDetailStockBy" class="wine-detail-value"></div>
+            </div>
+            <div class="wine-detail-box">
+                <div class="wine-detail-label">Donated By / Brought By</div>
+                <div id="wineDetailDonatedBy" class="wine-detail-value"></div>
+            </div>
+            <div class="wine-detail-box full">
+                <div class="wine-detail-label">Description / Notes</div>
+                <div id="wineDetailDescription" class="wine-detail-value"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+
+// ============================================================
+// DATA
+// ============================================================
+
+// Google Sheets is the only persistent data store.
+// No inventory or event data is stored in the browser.
+let inventory = [];
+let events = [];
+
+// Remove any legacy browser-stored inventory/event data from older versions.
+try {
+    localStorage.removeItem("rcmWineInventory");
+    localStorage.removeItem("rcmWineEvents");
+    localStorage.removeItem("rcmGoogleSyncUrl");
+} catch (e) {}
+
+// Admin access is local to this browser/session.
+let adminUnlocked = sessionStorage.getItem("rcmWineAdminUnlocked") === "1";
+let guestUnlocked = sessionStorage.getItem("rcmWineGuestUnlocked") === "1";
+
+
+// Remove the old/current event requested by the user.
+const oldEventCount = events.length;
+events = events.filter(event => event.eventName !== "RC Makati Meeting");
+
+
+// ============================================================
+// ADMIN ACCESS / ADMIN PORTAL
+// ============================================================
+
+// Front-end portal credentials.
+// IMPORTANT: this is suitable for a lightweight static-site gate,
+// but it is NOT a server-side security boundary.
+// For true authentication, validate the user in Google Apps Script.
+const ADMIN_USERNAME = "admin";
+const ADMIN_PASSWORD = "admin";
+
+
+
+function updateAdminUI() {
+    // Admin authentication is controlled only through the Admin Portal.
+}
+
+function requireAdmin(action) {
+    if (adminUnlocked) return true;
+    openAdminPortal(action || "This action");
+    return false;
+}
+
+function openAdminPortal(message) {
+    const overlay = document.getElementById("adminPortalOverlay");
+    const error = document.getElementById("adminPortalError");
+    const username = document.getElementById("adminUsername");
+    const password = document.getElementById("adminPassword");
+
+    if (!overlay) return;
+
+    if (error) {
+        error.textContent = message
+            ? message + " requires Admin Access."
+            : "";
+        error.style.display = message ? "block" : "none";
+    }
+
+    overlay.classList.add("show");
+    overlay.setAttribute("aria-hidden", "false");
+
+    setTimeout(() => {
+        if (username) {
+            username.focus();
+            username.select();
+        }
+    }, 50);
+
+    if (password) password.value = "";
+}
+
+function closeAdminPortal() {
+    // Login is mandatory before the main application can be viewed.
+    if (!adminUnlocked) {
+        const overlay = document.getElementById("adminPortalOverlay");
+        if (overlay) {
+            overlay.classList.add("login-required");
+            overlay.classList.add("show");
+            overlay.setAttribute("aria-hidden", "false");
+        }
+        return;
+    }
+
+    const overlay = document.getElementById("adminPortalOverlay");
+    const error = document.getElementById("adminPortalError");
+
+    if (overlay) {
+        overlay.classList.remove("show");
+        overlay.classList.remove("login-required");
+        overlay.setAttribute("aria-hidden", "true");
+    }
+    if (error) {
+        error.textContent = "";
+        error.style.display = "none";
+    }
+}
+
+function logoutAdmin() {
+    adminUnlocked = false;
+    sessionStorage.removeItem("rcmWineAdminUnlocked");
+
+    document.body.classList.add("admin-login-first");
+    document.documentElement.classList.add("admin-login-required");
+
+    const overlay = document.getElementById("adminPortalOverlay");
+    if (overlay) {
+        overlay.classList.add("login-required");
+        overlay.classList.add("show");
+        overlay.setAttribute("aria-hidden", "false");
+    }
+
+    updateAdminUI();
+    renderInventory();
+    renderEvents();
+    if (guestUnlocked && typeof populateEventReportSelector === "function") {
+        populateEventReportSelector();
+    }
+    if (guestUnlocked) setTimeout(function(){
+        applyGuestPermissions();
+        addGuestEventUsageButtons();
+        populateGuestEventUsageSelector();
+        if (typeof populateEventReportSelector === "function") {
+            populateEventReportSelector();
+        }
+    }, 150);
+
+    const logoutButton = document.getElementById("adminPortalLogout");
+    if (logoutButton) logoutButton.style.display = "none";
+    if (overlay) {
+        overlay.classList.add("login-required");
+        overlay.classList.add("show");
+        overlay.setAttribute("aria-hidden", "false");
+    }
+    openAdminPortal();
+    alert("Admin Portal logged out.");
+}
+
+
+function enterGuestMode() {
+    adminUnlocked = false;
+    guestUnlocked = true;
+    sessionStorage.removeItem("rcmWineAdminUnlocked");
+    sessionStorage.setItem("rcmWineGuestUnlocked", "1");
+
+    document.body.classList.remove("admin-login-first");
+    document.body.classList.add("guest-mode");
+    document.documentElement.classList.remove("admin-login-required");
+
+    const overlay = document.getElementById("adminPortalOverlay");
+    if (overlay) {
+        overlay.classList.remove("show", "login-required");
+        overlay.setAttribute("aria-hidden", "true");
+    }
+
+    updateAdminUI();
+    renderInventory();
+    renderEvents();
+    if (typeof populateEventReportSelector === "function") {
+        populateEventReportSelector();
+    }
+    setTimeout(function(){
+        applyGuestPermissions();
+        addGuestEventUsageButtons();
+        populateGuestEventUsageSelector();
+        if (typeof populateEventReportSelector === "function") {
+            populateEventReportSelector();
+        }
+    }, 150);
+}
+
+function logoutGuest() {
+    guestUnlocked = false;
+    sessionStorage.removeItem("rcmWineGuestUnlocked");
+    document.body.classList.add("admin-login-first");
+    document.body.classList.remove("guest-mode");
+    document.documentElement.classList.add("admin-login-required");
+    openAdminPortal();
+}
+
+function guardGuestWrite(action) {
+    if (guestUnlocked) {
+        alert("Guest accounts are view-only. You can only view records, open attachments, and print.");
+        return false;
+    }
+    return true;
+}
+
+
+
+function addGuestEventUsageButtons() {
+    if (!guestUnlocked) return;
+
+    // Look through rendered event containers and add a guest-safe button
+    // next to each event. The report is generated from the selected event
+    // without enabling any edit/stock controls.
+    const candidates = document.querySelectorAll(
+        "[data-event-id], .event-card, .event-item, .event-row, .event"
+    );
+
+    candidates.forEach(function(el) {
+        if (el.querySelector(".guest-event-usage-btn")) return;
+
+        let eventId = el.getAttribute("data-event-id") ||
+                      el.dataset.eventId ||
+                      el.getAttribute("data-id");
+
+        if (!eventId) return;
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "guest-event-usage-btn";
+        btn.textContent = "🖨️ View / Print Event Usage";
+        btn.style.cssText =
+            "margin:5px 0;padding:7px 10px;border:0;border-radius:6px;" +
+            "cursor:pointer;background:#285a8f;color:#fff;font-size:12px;";
+        btn.onclick = function() {
+            openGuestEventUsageReport(eventId);
+        };
+
+        el.appendChild(btn);
+    });
+}
+
+function openGuestEventUsageReport(eventId) {
+    if (!guestUnlocked) {
+        alert("Please continue as Guest first.");
+        return;
+    }
+
+    // Reuse an existing event usage/report function when the uploaded
+    // application exposes one. We intentionally do not enable edit functions.
+    const possibleFunctions = [
+        "viewEventUsageReport",
+        "showEventUsageReport",
+        "printEventUsageReport",
+        "openEventUsageReport",
+        "generateEventUsageReport",
+        "printUsageReport",
+        "viewUsageReport"
+    ];
+
+    for (const fn of possibleFunctions) {
+        if (typeof window[fn] === "function") {
+            try {
+                window[fn](eventId);
+                return;
+            } catch (e) {
+                console.warn("Guest event usage report function failed:", fn, e);
+            }
+        }
+    }
+
+    // Fallback: select the event in an existing event selector, if present,
+    // then invoke the existing print/view usage action.
+    const selectors = document.querySelectorAll(
+        'select[id*="event" i], select[name*="event" i]'
+    );
+
+    for (const select of selectors) {
+        const option = Array.from(select.options).find(
+            o => String(o.value) === String(eventId) ||
+                 String(o.dataset.eventId || "") === String(eventId)
+        );
+        if (option) {
+            select.value = option.value;
+            select.dispatchEvent(new Event("change", {bubbles:true}));
+            break;
+        }
+    }
+
+    const buttons = Array.from(document.querySelectorAll("button"));
+    const usageButton = buttons.find(btn => {
+        const t = (btn.textContent || "").toLowerCase();
+        return t.includes("event usage") ||
+               t.includes("usage report") ||
+               t.includes("print usage") ||
+               t.includes("view usage");
+    });
+
+    if (usageButton) {
+        usageButton.click();
+        return;
+    }
+
+    alert("The Event Usage report control could not be located in this version of the system.");
+}
+
+
+function populateGuestEventUsageSelector() {
+    if (!guestUnlocked) return;
+
+    const select = document.getElementById("guestEventUsageSelect");
+    if (!select) return;
+
+    const current = select.value;
+    const list = Array.isArray(events) ? events : [];
+
+    select.innerHTML = '<option value="">Select an event...</option>';
+
+    list.forEach(function(event) {
+        if (!event) return;
+        const option = document.createElement("option");
+        option.value = event.id;
+        option.textContent = event.eventName || ("Event " + event.id);
+        select.appendChild(option);
+    });
+
+    if (current && list.some(e => String(e.id) === String(current))) {
+        select.value = current;
+    }
+}
+
+function guestPrintSelectedEventUsage() {
+    if (!guestUnlocked) {
+        alert("Please continue as Guest first.");
+        return;
+    }
+
+    const select = document.getElementById("guestEventUsageSelect");
+    const id = select ? select.value : "";
+
+    if (!id) {
+        alert("Please select a specific event first.");
+        return;
+    }
+
+    // This is the existing report generator in the uploaded system.
+    // Guests are allowed to call it; no data is changed.
+    if (typeof printEventUsageReport === "function") {
+        printEventUsageReport(id);
+    } else {
+        alert("The Event Usage Report function is unavailable.");
+    }
+}
+
+function applyGuestPermissions() {
+    if (!guestUnlocked) return;
+
+    document.body.classList.add("guest-mode");
+
+    document.querySelectorAll("button").forEach(function(btn) {
+        const text = (btn.textContent || "").trim().toLowerCase();
+        const onclick = (btn.getAttribute("onclick") || "").toLowerCase();
+
+        const allowed =
+            text.includes("print") ||
+            text.includes("attachment") ||
+            text.includes("view attachment") ||
+            text.includes("event usage") ||
+            text.includes("usage report") ||
+            text.includes("view usage") ||
+            onclick.includes("print") ||
+            onclick.includes("attachment") ||
+            onclick.includes("viewattachment") ||
+            onclick.includes("eventusage") ||
+            onclick.includes("usagereport") ||
+            onclick.includes("printselectedeventusage") ||
+            onclick.includes("focuseventreportselector") ||
+            onclick.includes("focuseventreportselector") ||
+            text.includes("exit guest");
+
+        const blockedWords = [
+            "add", "save", "delete", "edit", "update", "restock",
+            "receive", "received", "use wine", "usage", "finalize",
+            "inventory", "event preparation"
+        ];
+
+        if (!allowed && blockedWords.some(w => text.includes(w) || onclick.includes(w))) {
+            btn.style.display = "none";
+        }
+    });
+
+    document.querySelectorAll("input, select, textarea").forEach(function(el) {
+        if (!el.closest("#adminPortalOverlay")) {
+            // Guest must be able to choose an event for the read-only report.
+            if (el.id === "reportEventSelect" || el.id === "guestEventUsageSelect") {
+                el.readOnly = false;
+                el.disabled = false;
+                el.style.pointerEvents = "auto";
+                el.style.background = "#fff";
+            } else {
+                el.readOnly = true;
+                el.disabled = true;
+            }
+        }
+    });
+
+    // The existing report selector is guest-safe: it only selects an event
+    // and calls the existing print/view-attachment functions.
+    const reportSelect = document.getElementById("reportEventSelect");
+    if (reportSelect) {
+        reportSelect.disabled = false;
+        reportSelect.style.pointerEvents = "auto";
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const form = document.getElementById("adminLoginForm");
+    const overlay = document.getElementById("adminPortalOverlay");
+
+    const guestButton = document.getElementById("guestLoginButton");
+    if (guestButton) {
+        guestButton.addEventListener("click", function() {
+            enterGuestMode();
+        });
+    }
+
+    if (form) {
+        form.addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const username = document.getElementById("adminUsername").value.trim();
+            const password = document.getElementById("adminPassword").value;
+
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                adminUnlocked = true;
+                guestUnlocked = false;
+                sessionStorage.removeItem("rcmWineGuestUnlocked");
+                sessionStorage.setItem("rcmWineAdminUnlocked", "1");
+                document.body.classList.remove("guest-mode");
+
+                document.body.classList.remove("admin-login-first");
+                document.documentElement.classList.remove("admin-login-required");
+
+                updateAdminUI();
+                renderInventory();
+                renderEvents();
+                const logoutButton = document.getElementById("adminPortalLogout");
+                if (logoutButton) logoutButton.style.display = "block";
+                closeAdminPortal();
+                alert("Admin Portal login successful.");
+            } else {
+                const error = document.getElementById("adminPortalError");
+                if (error) {
+                    error.textContent = "Incorrect username or password.";
+                    error.style.display = "block";
+                }
+                document.getElementById("adminPassword").value = "";
+                document.getElementById("adminPassword").focus();
+            }
+        });
+    }
+
+    if (overlay) {
+        overlay.addEventListener("click", function(e) {
+            if (e.target === overlay) {
+                if (!adminUnlocked) {
+                    openAdminPortal();
+                } else {
+                    closeAdminPortal();
+                }
+            }
+        });
+    }
+
+    document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape" && !adminUnlocked) {
+            e.preventDefault();
+            openAdminPortal();
+        } else if (e.key === "Escape") {
+            closeAdminPortal();
+        }
+    });
+});
+// ============================================================
+// SAVE
+// ============================================================
+
+let googleSyncTimer = null;
+
+function saveData() {
+
+    // Google Sheets is the only persistent data store.
+    // Automatically sync changes to Google Sheets in the background.
+    // Debounced so multiple quick changes create only one request.
+    if (googleSyncUrl()) {
+        clearTimeout(googleSyncTimer);
+        googleSyncTimer = setTimeout(() => {
+            googleSyncSave(true);
+        }, 800);
+    }
+
+}
+
+
+// ============================================================
+// HELPERS
+// ============================================================
+
+function today() {
+
+    return new Date()
+        .toISOString()
+        .split("T")[0];
+
+}
+
+
+function escapeHTML(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+function getWine(id) {
+
+    return inventory.find(
+        wine => Number(wine.id) === Number(id)
+    );
+
+}
+
+
+function reservedForEvents(wineId) {
+
+    return events
+        .filter(event => event.status === "open")
+        .reduce((total, event) => {
+
+            return total +
+                event.items
+                    .filter(item =>
+                        Number(item.wineId) === Number(wineId)
+                    )
+                    .reduce(
+                        (sum, item) =>
+                            sum + Number(item.prepared),
+                        0
+                    );
+
+        }, 0);
+
+}
+
+
+function availableInStore(wine) {
+
+    return Math.max(
+        0,
+        Number(wine.totalReceived)
+        - Number(wine.totalUsed)
+        - reservedForEvents(wine.id)
+    );
+
+}
+
+
+// ============================================================
+// ADD / RESTOCK
+// ============================================================
+
+document
+.getElementById("wineForm")
+.addEventListener("submit", function(e) {
+
+    e.preventDefault();
+
+    const name =
+        document.getElementById("wineName")
+        .value.trim();
+
+    const type =
+        document.getElementById("wineType")
+        .value;
+
+    const quantity =
+        Number(document.getElementById("quantity").value);
+
+    const date =
+        document.getElementById("stockDate").value;
+
+    const stockBy =
+        document.getElementById("stockBy")
+        .value.trim();
+
+    const donatedBy =
+        document.getElementById("donatedBy")
+        .value.trim();
+
+    const supplier =
+        document.getElementById("supplier")
+        .value.trim();
+
+    const batch =
+        document.getElementById("batch")
+        .value.trim();
+
+    const price =
+        Number(document.getElementById("price").value || 0);
+
+    const minimumStock =
+        Number(
+            document.getElementById("minimumStock").value || 0
+        );
+
+    const description =
+        document.getElementById("wineDescription")
+        .value.trim();
+
+
+    // A stock record is unique by Wine Name + Wine Type + Donor.
+    // This allows the same wine/type to be donated by different people
+    // and keeps each donor's stock separately traceable.
+    const normalizedName = name.toLowerCase();
+    const normalizedType = type.toLowerCase();
+    const normalizedDonor = donatedBy.toLowerCase();
+
+    let wine =
+        inventory.find(
+            item =>
+                String(item.name || '').trim().toLowerCase() === normalizedName &&
+                String(item.type || '').trim().toLowerCase() === normalizedType &&
+                String(item.donatedBy || '').trim().toLowerCase() === normalizedDonor
+        );
+
+
+    if (wine) {
+
+        wine.totalReceived += quantity;
+
+        wine.lastStockDate = date;
+        wine.stockBy = stockBy;
+        wine.donatedBy = donatedBy || wine.donatedBy || "";
+
+        wine.supplier =
+            supplier || wine.supplier;
+
+        wine.batch =
+            batch || wine.batch;
+
+        wine.price = price;
+
+        wine.minimumStock =
+            minimumStock;
+
+        if (description) {
+            wine.description =
+                description;
+        }
+
+        alert(
+            quantity +
+            " bottles added to existing " + type +
+            " stock from " + (donatedBy || "the same donor") + "."
+        );
+
+    } else {
+
+        inventory.push({
+
+            id: Date.now(),
+
+            name,
+
+            type,
+
+            totalReceived: quantity,
+
+            totalUsed: 0,
+
+            lastStockDate: date,
+
+            stockBy,
+
+            donatedBy,
+
+            supplier,
+
+            batch,
+
+            price,
+
+            minimumStock,
+
+            description
+
+        });
+
+        alert(
+            "New stock added: " + name + " — " + type +
+            (donatedBy ? " — Donated By: " + donatedBy : "")
+        );
+
+    }
+
+
+    saveData();
+
+    this.reset();
+
+    document.getElementById("stockDate")
+        .value = today();
+
+    document.getElementById("minimumStock")
+        .value = 5;
+
+    refresh();
+
+});
+
+
+// ============================================================
+// PREPARATION ROWS
+// ============================================================
+
+function addPreparationRow() {
+
+    const container =
+        document.getElementById("prepRows");
+
+    const row =
+        document.createElement("div");
+
+    row.className = "prep-row";
+
+    row.innerHTML = `
+
+        <select class="prep-wine">
+
+            <option value="">
+                Select wine...
+            </option>
+
+            ${inventory.map(wine => {
+
+                const available =
+                    availableInStore(wine);
+
+                return `
+                    <option value="${wine.id}">
+                        ${escapeHTML(wine.name)}
+                        — ${escapeHTML(wine.type || "Other")}
+                        ${wine.donatedBy ? "— " + escapeHTML(wine.donatedBy) : ""}
+                        — ${available} available
+                    </option>
+                `;
+
+            }).join("")}
+
+        </select>
+
+
+        <input
+            class="prep-qty"
+            type="number"
+            min="1"
+            placeholder="Qty prepared">
+
+
+        <input
+            class="prep-note"
+            placeholder="Note / location">
+
+
+        <button
+            type="button"
+            class="red small-btn"
+            onclick="this.parentElement.remove()">
+
+            Remove
+
+        </button>
+
+    `;
+
+    container.appendChild(row);
+
+}
+
+
+// ============================================================
+// SAVE EVENT
+// ============================================================
+
+function saveEvent() {
+
+    if (!guardGuestWrite("saveEvent")) return;
+    const eventName =
+        document.getElementById("eventName")
+        .value.trim();
+
+    const eventDate =
+        document.getElementById("eventDate")
+        .value;
+
+    const preparedBy =
+        document.getElementById("preparedBy")
+        .value.trim();
+
+    const receivedBy = "";
+
+    const description =
+        document.getElementById("eventDescription")
+        .value.trim();
+
+
+    if (!eventName ||
+        !eventDate ||
+        !preparedBy) {
+
+        alert(
+            "Please enter Event Name, Event Date and Prepared By."
+        );
+
+        return;
+
+    }
+
+
+    const rows =
+        [...document.querySelectorAll(".prep-row")];
+
+
+    if (rows.length === 0) {
+
+        alert(
+            "Please add at least one wine."
+        );
+
+        return;
+
+    }
+
+
+    const items = [];
+
+
+    for (const row of rows) {
+
+        const wineId =
+            Number(
+                row.querySelector(".prep-wine").value
+            );
+
+        const quantity =
+            Number(
+                row.querySelector(".prep-qty").value
+            );
+
+        const note =
+            row.querySelector(".prep-note").value.trim();
+
+
+        if (!wineId || quantity <= 0) {
+
+            alert(
+                "Please select a wine and quantity for every row."
+            );
+
+            return;
+
+        }
+
+
+        const wine =
+            getWine(wineId);
+
+
+        if (!wine) {
+
+            alert("Wine not found.");
+
+            return;
+
+        }
+
+
+        const available =
+            availableInStore(wine);
+
+
+        if (quantity > available) {
+
+            alert(
+                `${wine.name} has only ${available} bottles available in store.`
+            );
+
+            return;
+
+        }
+
+
+        // Prevent duplicate wine rows
+
+        if (
+            items.some(
+                item =>
+                    Number(item.wineId) === wineId
+            )
+        ) {
+
+            alert(
+                "Please add each wine only once per event."
+            );
+
+            return;
+
+        }
+
+
+        items.push({
+
+            wineId: wine.id,
+
+            wineName: wine.name,
+
+            wineType: wine.type,
+
+            prepared: quantity,
+
+            received: quantity,
+
+            used: 0,
+
+            returned: 0,
+
+            note
+
+        });
+
+    }
+
+
+    events.push({
+
+        id: Date.now(),
+
+        eventName,
+
+        eventDate,
+
+        preparedBy,
+
+        receivedBy,
+
+        description,
+
+        createdAt:
+            new Date().toISOString(),
+
+        status: "open",
+
+        items
+
+    });
+
+
+    saveData();
+
+
+    document.getElementById("eventForm")
+        .reset();
+
+    document.getElementById("prepRows")
+        .innerHTML = "";
+
+
+    refresh();
+
+
+    alert(
+        "Event saved. Wine has been reserved for this event."
+    );
+
+}
+
+
+// ============================================================
+// INVENTORY
+// ============================================================
+
+
+function showWineDetails(id) {
+    const wine = getWine(id);
+    if (!wine) return;
+
+    const available = availableInStore(wine);
+
+    document.getElementById("wineDetailName").textContent = wine.name || "Wine";
+    document.getElementById("wineDetailType").textContent = wine.type || "-";
+    document.getElementById("wineDetailAvailable").textContent = available + " bottles";
+    document.getElementById("wineDetailReceived").textContent = Number(wine.totalReceived || 0) + " bottles";
+    document.getElementById("wineDetailUsed").textContent = Number(wine.totalUsed || 0) + " bottles";
+    document.getElementById("wineDetailSupplier").textContent = wine.supplier || "-";
+    document.getElementById("wineDetailBatch").textContent = wine.batch || "-";
+    document.getElementById("wineDetailPrice").textContent =
+        Number(wine.price || 0) > 0
+            ? "₱" + Number(wine.price).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})
+            : "-";
+    document.getElementById("wineDetailDate").textContent = wine.lastStockDate || "-";
+    document.getElementById("wineDetailStockBy").textContent = wine.stockBy || "-";
+    document.getElementById("wineDetailDonatedBy").textContent = wine.donatedBy || "-";
+    document.getElementById("wineDetailDescription").textContent = wine.description || "No description or notes recorded.";
+
+    document.getElementById("wineDetailsModal").classList.add("show");
+}
+
+function closeWineDetails(event) {
+    if (event && event.target !== document.getElementById("wineDetailsModal")) return;
+    document.getElementById("wineDetailsModal").classList.remove("show");
+}
+
+document.addEventListener("keydown", function(event) {
+    if (event.key === "Escape") closeWineDetails();
+});
+
+function renderInventory() {
+
+    const table =
+        document.getElementById("inventoryTable");
+
+    const search =
+        document.getElementById("inventorySearch")
+        .value.toLowerCase();
+
+    const type =
+        document.getElementById("inventoryType")
+        .value;
+
+
+    const list =
+        inventory.filter(wine => {
+
+            return (
+                wine.name
+                    .toLowerCase()
+                    .includes(search)
+                &&
+                (!type || wine.type === type)
+            );
+
+        });
+
+
+    table.innerHTML = "";
+
+
+    if (!list.length) {
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="8" class="empty">
+                    No inventory found.
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    list.forEach(wine => {
+
+        const available =
+            availableInStore(wine);
+
+        const low =
+            available <= Number(wine.minimumStock || 0);
+
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+
+            <td>
+                <strong
+                    class="wine-link"
+                    title="Click to view wine description and notes"
+                    onclick="showWineDetails(${wine.id})">
+                    ${escapeHTML(wine.name)}
+                </strong>
+            </td>
+
+            <td>
+                ${escapeHTML(wine.type)}
+            </td>
+
+            <td>
+                ${wine.totalReceived}
+            </td>
+
+            <td>
+                ${wine.totalUsed}
+            </td>
+
+            <td class="${low ? "low" : "good"}">
+                ${available}
+            </td>
+
+            <td>
+                ${wine.lastStockDate || "-"}
+            </td>
+
+            <td>
+
+                ${
+                    low
+
+                    ?
+
+                    `<span class="badge"
+                        style="background:#ffe1e1;color:#a00000">
+                        LOW STOCK
+                    </span>`
+
+                    :
+
+                    `<span class="badge"
+                        style="background:#dff4e7;color:#176536">
+                        GOOD
+                    </span>`
+                }
+
+            </td>
+
+            <td>
+
+                <div class="button-row">
+
+                    <button
+                        class="small-btn"
+                        onclick="quickRestock(${wine.id})">
+
+                        + Restock
+
+                    </button>
+
+                    ${
+                        adminUnlocked
+                            ?
+                            `<button
+                                class="red small-btn"
+                                onclick="deleteWine(${wine.id})">
+
+                                Delete
+
+                            </button>`
+                            :
+                            ""
+                    }
+
+                </div>
+
+            </td>
+        `;
+
+
+        table.appendChild(row);
+
+    });
+
+}
+
+
+// ============================================================
+// SPECIFIC EVENT REPORT SELECTOR
+// ============================================================
+
+function populateEventReportSelector() {
+
+    const select =
+        document.getElementById("reportEventSelect");
+
+    if (!select) return;
+
+    const currentValue = select.value;
+
+    const sorted =
+        [...events].sort(
+            (a, b) =>
+                new Date(b.eventDate) -
+                new Date(a.eventDate)
+        );
+
+    select.innerHTML =
+        `<option value="">Select an event...</option>`;
+
+    sorted.forEach(event => {
+
+        const option =
+            document.createElement("option");
+
+        option.value = event.id;
+        option.textContent =
+            `${event.eventName} — ${event.eventDate} — ${event.status === "finalized" ? "FINALIZED" : "OPEN"}`;
+
+        select.appendChild(option);
+    });
+
+    if (events.some(event => String(event.id) === String(currentValue))) {
+        select.value = currentValue;
+    }
+}
+
+function focusEventReportSelector() {
+
+    const select =
+        document.getElementById("reportEventSelect");
+
+    if (!select) return;
+
+    select.focus();
+    select.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+function printSelectedEventUsage() {
+
+    const select =
+        document.getElementById("reportEventSelect");
+
+    const id = select ? select.value : "";
+
+    if (!id) {
+        alert("Please select an event first.");
+        return;
+    }
+
+    printEventUsageReport(id);
+}
+
+function viewSelectedEventAttachment() {
+
+    const select =
+        document.getElementById("reportEventSelect");
+
+    const id = select ? select.value : "";
+
+    if (!id) {
+        alert("Please select an event first.");
+        return;
+    }
+
+    const event = events.find(
+        item => Number(item.id) === Number(id)
+    );
+
+    if (!event) {
+        alert("The selected event could not be found.");
+        return;
+    }
+
+    // IMPORTANT:
+    // Always reload the attachment index from Google Drive before opening.
+    // The Event Management section uses the same Drive attachment record.
+    // This prevents the Reports > View Attachment button from using an old
+    // in-memory event object that does not yet contain receivingAttachment.
+    updateGoogleSyncStatus("CHECKING EVENT ATTACHMENT...");
+
+    getFreshReceivingAttachment(id, function(attachment, error) {
+
+        if (!attachment || !attachment.driveUrl) {
+            updateGoogleSyncStatus("NO ATTACHMENT FOUND", false);
+            alert(
+                "No receiving form attachment is available for this event.\n\n" +
+                (error || "Attach the signed/scanned receiving form from the Event Management section first.")
+            );
+            return;
+        }
+
+        // Keep the Event Management record and the selected-report record
+        // linked to the exact same Google Drive attachment.
+        event.receivingAttachment = attachment;
+
+        updateGoogleSyncStatus("ATTACHMENT FOUND", true);
+
+        // Open the same Google Drive file attached to this event.
+        // From the Google Drive viewer, the user can print it for submission.
+        window.open(
+            attachment.driveUrl,
+            "_blank",
+            "noopener,noreferrer"
+        );
+    });
+}
+
+
+// ============================================================
+// EVENTS TABLE
+// ============================================================
+
+function renderEvents() {
+
+    populateEventReportSelector();
+
+    const table =
+        document.getElementById("eventsTable");
+
+    table.innerHTML = "";
+
+
+    if (!events.length) {
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="7" class="empty">
+                    No events created yet.
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    const sorted =
+        [...events].sort(
+            (a,b) =>
+                new Date(b.eventDate) -
+                new Date(a.eventDate)
+        );
+
+
+    sorted.forEach(event => {
+
+        const totalPrepared =
+            event.items.reduce(
+                (sum,item) =>
+                    sum + Number(item.prepared),
+                0
+            );
+
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+
+            <td>
+                <strong>
+                    ${escapeHTML(event.eventName)}
+                </strong>
+                ${
+                    event.receivingAttachment
+                    ?
+                    `<div class="receiving-attachment">
+                        <span class="attachment-badge" title="${escapeHTML(event.receivingAttachment.name)}">
+                            ☁️ Google Drive Form Attached
+                        </span>
+                    </div>`
+                    :
+                    ""
+                }
+            </td>
+
+            <td>
+                ${event.eventDate}
+            </td>
+
+            <td>
+                ${escapeHTML(event.preparedBy)}
+            </td>
+
+            <td>
+                ${escapeHTML(event.receivedBy || "-")}
+            </td>
+
+            <td>
+                ${totalPrepared} bottles
+            </td>
+
+            <td>
+
+                ${
+                    event.status === "open"
+
+                    ?
+
+                    `<span class="badge badge-open">
+                        OPEN / EVENT PENDING
+                    </span>`
+
+                    :
+
+                    `<span class="badge badge-final">
+                        FINALIZED
+                    </span>`
+                }
+
+            </td>
+
+            <td>
+
+                <div class="button-row">
+
+                    <button
+                        class="small-btn"
+                        onclick="printReceiving(${event.id})">
+
+                        🖨️ Receiving
+
+                    </button>
+
+                    <button
+                        class="small-btn"
+                        onclick="attachReceivingForm(${event.id})"
+                        title="Upload the signed/scanned receiving form to Google Drive">
+
+                        📎 ${event.receivingAttachment ? "Replace Form" : "Attach Form"}
+
+                    </button>
+
+                    ${
+                        event.receivingAttachment
+                        ?
+                        `<button
+                            class="small-btn"
+                            onclick="openReceivingAttachment(${event.id})"
+                            title="Open the receiving form stored in Google Drive">
+
+                            ☁️ View Form
+
+                        </button>
+
+                        <button
+                            class="small-btn"
+                            onclick="downloadReceivingAttachment(${event.id})"
+                            title="Open the Google Drive file">
+
+                            ⬇️ Drive
+
+                        </button>
+
+                        ${
+                            adminUnlocked
+                            ?
+                            `<button
+                                class="red small-btn"
+                                onclick="removeReceivingAttachment(${event.id})"
+                                title="Remove attached receiving form">
+
+                                Remove File
+
+                            </button>`
+                            :
+                            ""
+                        }`
+                        :
+                        ""
+                    }
+
+                    ${
+                        event.status === "open"
+
+                        ?
+
+                        `<button
+                            class="green small-btn"
+                            onclick="recordEventUsage(${event.id})">
+
+                            🍷 Enter Usage
+
+                        </button>`
+
+                        :
+
+                        `<button
+                            class="small-btn"
+                            onclick="printFinalEventReport(${event.id})">
+
+                            🖨️ Final Report
+
+                        </button>`
+                    }
+
+                    <button
+                        class="small-btn"
+                        onclick="printEventUsageReport(${event.id})">
+
+                        🍷 Print Usage
+
+                    </button>
+
+                    <button
+                        class="gray small-btn"
+                        onclick="printFinalEventReport(${event.id})">
+
+                        📄 Report
+
+                    </button>
+
+                    ${
+                        adminUnlocked
+                        ?
+                        `<button
+                            class="red small-btn"
+                            onclick="deleteEvent(${event.id})">
+
+                            🗑️ Delete Event
+
+                        </button>`
+                        :
+                        ""
+                    }
+
+                </div>
+
+            </td>
+
+        `;
+
+
+        table.appendChild(row);
+
+    });
+
+}
+
+
+// ============================================================
+function normalizeAttachmentEventId(value) {
+    return String(value == null ? "" : value).trim();
+}
+
+function findAttachmentForEvent(attachments, eventId) {
+    if (!attachments || typeof attachments !== "object") return null;
+
+    const target = normalizeAttachmentEventId(eventId);
+    if (!target) return null;
+
+    if (attachments[target]) return attachments[target];
+
+    for (const key of Object.keys(attachments)) {
+        const item = attachments[key];
+        if (!item) continue;
+
+        const storedId = normalizeAttachmentEventId(
+            item.eventId != null ? item.eventId : key
+        );
+
+        if (storedId === target) return item;
+
+        if (
+            target !== "" &&
+            storedId !== "" &&
+            !Number.isNaN(Number(target)) &&
+            !Number.isNaN(Number(storedId)) &&
+            Number(target) === Number(storedId)
+        ) {
+            return item;
+        }
+    }
+
+    return null;
+}
+
+function attachmentCallbackRequest(action, params, done, timeoutMs = 15000) {
+    const url = googleSyncUrl();
+    if (!url) {
+        done(false, null, "Google Apps Script Web App URL is not configured.");
+        return;
+    }
+
+    const callbackName =
+        "rcmAttachmentCallback_" +
+        Date.now() + "_" +
+        Math.floor(Math.random() * 100000);
+
+    const script = document.createElement("script");
+    let finished = false;
+
+    function cleanup() {
+        finished = true;
+        try { delete window[callbackName]; } catch (e) {}
+        if (script.parentNode) script.parentNode.removeChild(script);
+    }
+
+    window[callbackName] = function(result) {
+        if (finished) return;
+        cleanup();
+
+        if (!result || result.ok === false) {
+            done(false, result || null,
+                (result && (result.error || result.message)) ||
+                "Google Apps Script did not return a valid attachment response.");
+            return;
+        }
+
+        done(true, result, "");
+    };
+
+    script.onerror = function() {
+        cleanup();
+        done(false, null,
+            "The Google Apps Script attachment endpoint could not be reached.\n\n" +
+            "Make sure the Web App deployment is active and accessible to anyone.");
+    };
+
+    const query = new URLSearchParams();
+    query.set("action", action);
+    query.set("callback", callbackName);
+    Object.keys(params || {}).forEach(key => {
+        query.set(key, params[key] == null ? "" : String(params[key]));
+    });
+    query.set("_", String(Date.now()));
+
+    script.src = url + "?" + query.toString();
+    document.head.appendChild(script);
+
+    setTimeout(() => {
+        if (!finished) {
+            cleanup();
+            done(false, null, "The attachment request timed out.");
+        }
+    }, timeoutMs);
+}
+
+function applyReceivingAttachments(attachments) {
+    const map = attachments && typeof attachments === "object"
+        ? attachments
+        : {};
+
+    events.forEach(event => {
+        const attachment = findAttachmentForEvent(map, event.id);
+        if (attachment && attachment.driveUrl) {
+            event.receivingAttachment = attachment;
+        } else {
+            delete event.receivingAttachment;
+        }
+    });
+}
+
+function loadReceivingAttachmentsFromDrive(done) {
+    attachmentCallbackRequest(
+        "loadReceivingAttachments",
+        {},
+        function(ok, result, error) {
+            if (!ok) {
+                if (done) done(false, {}, error);
+                return;
+            }
+
+            const attachments = result && result.attachments && typeof result.attachments === "object"
+                ? result.attachments
+                : {};
+
+            applyReceivingAttachments(attachments);
+
+            if (done) done(true, attachments, "");
+        }
+    );
+}
+
+function getFreshReceivingAttachment(id, done) {
+    const event = events.find(
+        item => Number(item.id) === Number(id)
+    );
+
+    if (!event) {
+        done(null, "The selected event could not be found.");
+        return;
+    }
+
+    // 1. Ask Apps Script for the exact event ID. This reads the persistent
+    // attachment index backed by Script Properties + ReceivingAttachments sheet.
+    attachmentCallbackRequest(
+        "getReceivingAttachment",
+        {
+            eventId: event.id,
+            eventName: event.eventName || "",
+            eventDate: event.eventDate || ""
+        },
+        function(ok, result, error) {
+            if (ok && result && result.found && result.attachment && result.attachment.driveUrl) {
+                event.receivingAttachment = result.attachment;
+                done(result.attachment, "");
+                return;
+            }
+
+            // 2. Recovery scan: search the actual Drive folder using event
+            // name/date, then repair the persistent attachment record.
+            attachmentCallbackRequest(
+                "findReceivingAttachment",
+                {
+                    eventId: event.id,
+                    eventName: event.eventName || "",
+                    eventDate: event.eventDate || ""
+                },
+                function(ok2, result2, error2) {
+                    if (ok2 && result2 && result2.found && result2.attachment && result2.attachment.driveUrl) {
+                        event.receivingAttachment = result2.attachment;
+                        done(result2.attachment, "");
+                        return;
+                    }
+
+                    delete event.receivingAttachment;
+                    done(
+                        null,
+                        error2 ||
+                        (result2 && result2.message) ||
+                        error ||
+                        "No receiving form is stored for this event in Google Drive."
+                    );
+                }
+            );
+        }
+    );
+}
+
+// RECEIVING FORM ATTACHMENT
+// ============================================================
+let receivingAttachmentEventId = null;
+
+function attachReceivingForm(id) {
+    const event = events.find(item => Number(item.id) === Number(id));
+    if (!event) return;
+
+    if (!googleSyncUrl()) {
+        alert("Google Drive is not connected. Please configure the Google Apps Script Web App first.");
+        return;
+    }
+
+    receivingAttachmentEventId = Number(id);
+
+    const input = document.getElementById("receivingAttachmentInput");
+    if (!input) return;
+
+    input.value = "";
+    input.click();
+}
+
+function handleReceivingAttachment(e) {
+    const input = e.target;
+    const file = input.files && input.files[0];
+
+    if (!file || receivingAttachmentEventId === null) return;
+
+    const allowedTypes = [
+        "application/pdf",
+        "image/jpeg",
+        "image/png",
+        "image/webp"
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+        alert("Please attach a PDF, JPG, PNG, or WEBP file.");
+        input.value = "";
+        receivingAttachmentEventId = null;
+        return;
+    }
+
+    const maxSize = 4 * 1024 * 1024;
+
+    if (file.size > maxSize) {
+        alert("The receiving form is too large. Please use a file up to 4 MB.");
+        input.value = "";
+        receivingAttachmentEventId = null;
+        return;
+    }
+
+    const eventId = Number(receivingAttachmentEventId);
+    const reader = new FileReader();
+
+    reader.onload = function() {
+        const dataUrl = String(reader.result || "");
+        const comma = dataUrl.indexOf(",");
+        const base64 = comma >= 0 ? dataUrl.substring(comma + 1) : dataUrl;
+
+        if (!base64) {
+            alert("The receiving form could not be prepared for upload.");
+            input.value = "";
+            receivingAttachmentEventId = null;
+            return;
+        }
+
+        const event = events.find(item => Number(item.id) === eventId);
+        if (!event) {
+            input.value = "";
+            receivingAttachmentEventId = null;
+            return;
+        }
+
+        const payload = {
+            action: "uploadReceivingForm",
+            eventId: eventId,
+            eventName: event.eventName || "Event",
+            eventDate: event.eventDate || "",
+            fileName: file.name,
+            mimeType: file.type,
+            base64: base64
+        };
+
+        updateGoogleSyncStatus("UPLOADING FORM...");
+
+        try {
+            submitGoogleDriveUpload(payload);
+        } catch (error) {
+            updateGoogleSyncStatus("UPLOAD ERROR");
+            alert("Receiving form upload failed.\n\n" + error.message);
+        }
+
+        input.value = "";
+        receivingAttachmentEventId = null;
+    };
+
+    reader.onerror = function() {
+        alert("The receiving form could not be read. Please try again.");
+        input.value = "";
+        receivingAttachmentEventId = null;
+    };
+
+    reader.readAsDataURL(file);
+}
+
+function submitGoogleDriveUpload(payload) {
+    const url = googleSyncUrl();
+    if (!url) throw new Error("Google Apps Script Web App URL is not configured.");
+
+    const iframeName = "receivingUploadFrame_" + Date.now();
+    const iframe = document.createElement("iframe");
+    iframe.name = iframeName;
+    iframe.style.display = "none";
+    document.body.appendChild(iframe);
+
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = url;
+    form.target = iframeName;
+    form.style.display = "none";
+
+    ["action", "eventId", "eventName", "eventDate", "fileName", "mimeType", "base64"]
+        .forEach(name => {
+            const field = document.createElement("input");
+            field.type = "hidden";
+            field.name = name;
+            field.value = payload[name] == null ? "" : String(payload[name]);
+            form.appendChild(field);
+        });
+
+    document.body.appendChild(form);
+    form.submit();
+
+    // Do not assume that 5 seconds is enough. Poll the attachment endpoint
+    // until the exact event ID is visible, then refresh the UI.
+    const started = Date.now();
+    const timeout = 30000;
+
+    const check = () => {
+        if (Date.now() - started > timeout) {
+            form.remove();
+            iframe.remove();
+            updateGoogleSyncStatus("UPLOAD CHECK TIMED OUT", false);
+            alert(
+                "The receiving form upload was sent, but the website could not confirm it within 30 seconds.\n\n" +
+                "Please click View Attachment again. If it is still missing, redeploy the Apps Script Web App and try once more."
+            );
+            return;
+        }
+
+        attachmentCallbackRequest(
+            "getReceivingAttachment",
+            { eventId: payload.eventId },
+            function(ok, result) {
+                if (ok && result && result.found && result.attachment && result.attachment.driveUrl) {
+                    const event = events.find(item => Number(item.id) === Number(payload.eventId));
+                    if (event) event.receivingAttachment = result.attachment;
+
+                    form.remove();
+                    iframe.remove();
+                    refresh();
+                    updateGoogleSyncStatus("FORM SAVED", true);
+                    alert("Receiving form saved to Google Drive and linked to this event.");
+                    return;
+                }
+
+                setTimeout(check, 1500);
+            },
+            10000
+        );
+    };
+
+    setTimeout(check, 2000);
+}
+
+function openReceivingAttachment(id) {
+    getFreshReceivingAttachment(id, function(attachment, error) {
+        if (!attachment || !attachment.driveUrl) {
+            alert(
+                "No Google Drive receiving form is available for this event.\n\n" +
+                (error || "Please attach the signed/scanned receiving form from the Events section first.")
+            );
+            return;
+        }
+
+        const event = events.find(item => Number(item.id) === Number(id));
+        if (event) event.receivingAttachment = attachment;
+
+        window.open(
+            attachment.driveUrl,
+            "_blank",
+            "noopener,noreferrer"
+        );
+    });
+}
+
+function downloadReceivingAttachment(id) {
+    openReceivingAttachment(id);
+}
+
+function removeReceivingAttachment(id) {
+    if (!requireAdmin("Remove Receiving Form")) return;
+
+if (!requireAdmin("Remove Receiving Form Attachment")) return;
+
+    const event = events.find(item => Number(item.id) === Number(id));
+    if (!event) return;
+
+    getFreshReceivingAttachment(id, function(attachment, error) {
+        if (!attachment) {
+            alert(error || "No receiving form is attached to this event.");
+            return;
+        }
+
+        if (!confirm(
+            `Remove the attached receiving form from "${event.eventName}"?\n\nThe Google Drive file will also be moved to Trash.`
+        )) {
+            return;
+        }
+
+        updateGoogleSyncStatus("REMOVING FORM...");
+
+        const iframeName = "receivingRemoveFrame_" + Date.now();
+        const iframe = document.createElement("iframe");
+        iframe.name = iframeName;
+        iframe.style.display = "none";
+        document.body.appendChild(iframe);
+
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = googleSyncUrl();
+        form.target = iframeName;
+        form.style.display = "none";
+
+        [
+            ["action", "removeReceivingForm"],
+            ["eventId", id],
+            ["driveFileId", attachment.driveFileId || ""]
+        ].forEach(([name, value]) => {
+            const field = document.createElement("input");
+            field.type = "hidden";
+            field.name = name;
+            field.value = String(value);
+            form.appendChild(field);
+        });
+
+        document.body.appendChild(form);
+        form.submit();
+
+        setTimeout(() => {
+            form.remove();
+            iframe.remove();
+            delete event.receivingAttachment;
+            loadReceivingAttachmentsFromDrive(function() {
+                refresh();
+                updateGoogleSyncStatus("FORM REMOVED", true);
+            });
+        }, 3000);
+    });
+}
+
+// RECORD AFTER-EVENT USAGE
+// ============================================================
+
+function recordEventUsage(id) {
+
+    const event =
+        events.find(
+            item => Number(item.id) === Number(id)
+        );
+
+
+    if (!event) return;
+
+
+    if (event.status !== "open") {
+
+        alert(
+            "This event has already been finalized."
+        );
+
+        return;
+
+    }
+
+
+    let message =
+        `AFTER EVENT - ${event.eventName}\n\n`;
+
+
+    for (const item of event.items) {
+
+        const wine =
+            getWine(item.wineId);
+
+
+        // The prepared quantity is already the confirmed quantity received
+        // for the event, so there is no need to ask for it again.
+        const received = Number(item.prepared);
+
+        const usedInput =
+            prompt(
+                `${item.wineName}\n\n` +
+                `Prepared / Received: ${received} bottles\n\n` +
+                `How many bottles were USED?`,
+                0
+            );
+
+
+        if (usedInput === null) return;
+
+
+        const used =
+            Number(usedInput);
+
+
+        if (
+            !Number.isInteger(used) ||
+            used < 0 ||
+            used > received
+        ) {
+
+            alert(
+                `Invalid used quantity for ${item.wineName}.`
+            );
+
+            return;
+
+        }
+
+
+        item.received =
+            received;
+
+        item.used =
+            used;
+
+        item.returned =
+            received - used;
+
+    }
+
+
+    const confirmFinalize =
+        confirm(
+            `Finalize "${event.eventName}"?\n\n` +
+            `This will add the actual bottles USED to the inventory consumption report.`
+        );
+
+
+    if (!confirmFinalize) return;
+
+
+    // Add actual usage to inventory
+
+    event.items.forEach(item => {
+
+        const wine =
+            getWine(item.wineId);
+
+
+        if (wine) {
+
+            wine.totalUsed +=
+                Number(item.used);
+
+        }
+
+    });
+
+
+    event.status =
+        "finalized";
+
+    event.finalizedAt =
+        new Date().toISOString();
+
+
+    saveData();
+
+    refresh();
+
+
+    alert(
+        "Event finalized successfully.\n\n" +
+        "Inventory has been updated."
+    );
+
+}
+
+
+// ============================================================
+// QUICK RESTOCK
+// ============================================================
+
+function quickRestock(id) {
+
+    const wine =
+        getWine(id);
+
+
+    if (!wine) return;
+
+
+    const qty =
+        Number(
+            prompt(
+                `Restock ${wine.name} — ${wine.type}\nDonated By: ${wine.donatedBy || "-"}\n\nQuantity:`,
+                1
+            )
+        );
+
+
+    if (!Number.isInteger(qty) || qty <= 0) {
+
+        return;
+
+    }
+
+
+    const date =
+        prompt(
+            "Exact restock date (YYYY-MM-DD):",
+            today()
+        );
+
+
+    if (!date) return;
+
+
+    const stockBy =
+        prompt(
+            "Stock By / Inventory By:",
+            wine.stockBy || ""
+        );
+
+
+    if (stockBy === null) return;
+
+
+    if (!stockBy.trim()) {
+        alert("Please enter the name of the person adding the stock.");
+        return;
+    }
+
+
+    wine.totalReceived += qty;
+
+    wine.lastStockDate = date;
+    wine.stockBy = stockBy.trim();
+
+
+    saveData();
+
+    refresh();
+
+
+    alert(
+        `${qty} bottles added to ${wine.name} — ${wine.type}` +
+        (wine.donatedBy ? ` (Donated By: ${wine.donatedBy})` : "")
+    );
+
+}
+
+
+// ============================================================
+// DELETE WINE
+// ============================================================
+
+function deleteWine(id) {
+
+    if (!guardGuestWrite("deleteWine")) return;
+    if (!requireAdmin("Delete Wine")) return;
+
+if (!requireAdmin("Delete Wine")) return;
+
+    const wine =
+        getWine(id);
+
+
+    if (!wine) return;
+
+
+    const usedByEvent =
+        events.some(
+            event =>
+                event.status === "open" &&
+                event.items.some(
+                    item =>
+                        Number(item.wineId) ===
+                        Number(id)
+                )
+        );
+
+
+    if (usedByEvent) {
+
+        alert(
+            "This wine is currently reserved for an open event and cannot be deleted."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !confirm(
+            `Delete ${wine.name} from inventory?`
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    inventory =
+        inventory.filter(
+            item =>
+                Number(item.id) !== Number(id)
+        );
+
+
+    saveData();
+
+    refresh();
+
+}
+
+
+// ============================================================
+// DELETE EVENT
+// ============================================================
+
+function deleteEvent(id) {
+
+    if (!guardGuestWrite("deleteEvent")) return;
+    if (!requireAdmin("Delete Event")) return;
+
+if (!requireAdmin("Delete Event")) return;
+
+    const event =
+        events.find(
+            item =>
+                Number(item.id) === Number(id)
+        );
+
+
+    if (!event) return;
+
+
+    if (event.status === "finalized") {
+
+        if (
+            !confirm(
+                `Delete FINALIZED event ${event.eventName}?\n\n` +
+                `This will reverse the bottles USED from this event back out of the inventory consumption totals.\n\n` +
+                `This action cannot be undone.`
+            )
+        ) {
+            return;
+        }
+
+        // Reverse the actual usage that was added when the event was finalized.
+        event.items.forEach(item => {
+            const wine = getWine(item.wineId);
+
+            if (wine) {
+                wine.totalUsed = Math.max(
+                    0,
+                    Number(wine.totalUsed || 0) - Number(item.used || 0)
+                );
+            }
+        });
+
+    } else {
+
+        if (
+            !confirm(
+                `Delete ${event.eventName}?\n\n` +
+                `The reserved wine will become available again.`
+            )
+        ) {
+            return;
+        }
+
+    }
+
+
+    events =
+        events.filter(
+            item =>
+                Number(item.id) !== Number(id)
+        );
+
+
+    saveData();
+
+    refresh();
+
+}
+
+
+// ============================================================
+// PRINT HEADER
+// ============================================================
+
+function printHeader(title) {
+
+    return `
+
+        <div class="print-header">
+
+            <img
+                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfcAAACyCAYAAABfl4ZMAAAACXBIWXMAAC4jAAAuIwF4pT92AAAE8WlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgMTAuMC1jMDAwIDI1LkcuZWY3MmU0ZSwgMjAyNS8wNi8yNy0xODo1NDowNSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpwaG90b3Nob3A9Imh0dHA6Ly9ucy5hZG9iZS5jb20vcGhvdG9zaG9wLzEuMC8iIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDI3LjMgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAyNi0wOC0xM1QxMjo0NDo1NyswODowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyNi0wOC0xM1QxMjo0NDo1NyswODowMCIgeG1wOk1vZGlmeURhdGU9IjIwMjYtMDgtMTNUMTI6NDQ6NTcrMDg6MDAiIGRjOmZvcm1hdD0iaW1hZ2UvcG5nIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjRiOTdkYmMzLTZiZmUtN2M0My1hODdjLTA3NmQ0YzNhZmJmYiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo0Yjk3ZGJjMy02YmZlLTdjNDMtYTg3Yy0wNzZkNGMzYWZiZmIiIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo0Yjk3ZGJjMy02YmZlLTdjNDMtYTg3Yy0wNzZkNGMzYWZiZmIiIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiPiA8eG1wTU06SGlzdG9yeT4gPHJkZjpTZXE+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJjcmVhdGVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOjRiOTdkYmMzLTZiZmUtN2M0My1hODdjLTA3NmQ0YzNhZmJmYiIgc3RFdnQ6d2hlbj0iMjAyNi0wOC0xM1QxMjo0NDo1NyswODowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIDI3LjMgKFdpbmRvd3MpIi8+IDwvcmRmOlNlcT4gPC94bXBNTTpIaXN0b3J5PiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PpYMHKgAAFsMSURBVHic7Z0HuBTV2cffbbcivTcFRGwooIKCBSti7C2a2GIssSYx0ZhPY4k1RhO7xt5b7C2KvWAXpFlARER6r7fu7ve8u//Bw7pz5pyZM1vuPb/HfUDu3t3Z2Znznrf938jAfa8ji8Viac38sLoTPTL2djp0m4+ofnVNsQ+ntdGBiB4ioq5ElMK/RYloHRGdRkRfFvn4ypJ4sQ/AYrFYLK2aM4loP5efXUVEBxX4eFoEvDuyWCwWi0WXAUR0MBHdTkSvENHWPl6jCxH9WfLzA4lomI/X3ZyIniaiG4noUCLalFoZ1nO3WCwWiw7HENFRRLQPESWEf2fjPoaIpmm81vFE1NbjOb/H81SpJaKXiagf/v8sImomoleJ6CkiupdaAdZzt1gsFosq7YnoASL6RY5hZ3oR0WNEFNN4vUMUnnMAEXXUeM2HBcMuOrJ8zPfk+VmLxBp3i8VisaiyIxFFJD/fGgZehc2IaCfFgru9FV/zcoUc/c7UCrDG3WKxWCyqDFZ4zuFEtL/C8/bw2CiIjFQ8tv9TeN421Aqwxt1isVgsOgVwKlxPRNUKxl2VnRVqxG5T3CxsSq0Aa9wtFovFokoPjUp6WRU8s6Vm9bss734kEY0y/BnKGmvcLRaLpfWxlYJn7Zb/VoWr1CtdftYVD1VqPDzuP2m8Vor82UqdzUjRscbdYrFYWg9bo9p9KhFNRp+6Dk2aIfwjJN6zzkaBJMadi+2GU3jsiXM1Ba10fvruC4417haLxdLyYS/9UiL6jIiOFYzlM0R0WYg24ySDr9Xo4z3yodOqxwV64xDpiEIQZzwRXSuJSpQE1rhbLBZLy4Y96A+I6CIXg3QhET2hKGq2UPO9uRCus/D/bdFnPtaH/RlNRAPzePyqbXIOq0kNjnBckec4q5AG4HO6MZUoVqHOYrFYWjZ9iWiIx3OOwPP2IqI1kuct8OElP4Y0wLYQuuntM99/Krz0OUQ0F6/ZzUd4/3uPn1ciosEbEBnDUOg3m0oQa9wtFoulZZNWfN4IInoWErJJl+ewYfWTs+aHCXizsAkeqtXxuXxLcp5WMOy657bg2LC8xWKxtGzqJcY6FzbCj0t+/i4R1VF585bkZ/dKJtTl0kBES6lEscbdYrFYWjY/aobTDyOi8yRFbaobhVKl2eXfzyaiEzRz97OoRLHG3WKxWFo2q3yE0/+Ro/vO0q43EdF7RNSGypsXMaZWbJ/jeoAbNF/nByJaRiWKzblbLBZLy2cKhr7ocBPmoR+sOL2tXOiO4jx+vABjr+OxO3BbYclijbvFYrG0fF4jopM1f2c7IrqfWjYH4OGHt6mEscbdYrFYWj5voMWtWCH1lSg+m0lE05Em4J755TiuZXnEZZI4XtaUrxXa6DbBuFju3+9UpM+zGue0ZLHG3WKxWMqPDjCMqrDxfJ6IfkWFYTZEXqYR0UQi+gqFfTrytTJiMO5bENEOELcZoTiS1gTcNbCIShhr3C0Wi6V8aAeBFTZmHxLRfUT0ukSaVeT+EI37cojKvAiP9jvNzYcuSXQALBBa2yohKjOUiI6G4e8T0vtzy5wq7YloFyL6DRFVENGJhdgYWONusVgs5cGWEJlhw+6oyvHjCyK6h4juQO+1G2wEvzQ43YwFXP6HiMCrCspvYcOffRIe92EjtD8R7YOCwI0Mvc80CN14wd/T8dhQseSu6PUfiWE0oWFb4SwWi6X04dzyS4JhFxmCqvaPJFPYCCHxsw2oqs3C4JRtiOgXRPSfEjDsbnn+h2Fg2aM/n4g+N9Aj/0ePc1gBvX5+rwtyDDszCBGOUOsFrHG3WCytnmQ6Sh2r1mYyuel0hEqMrgh1cyGZjCEYAPMQEfWUhIj98gVaxtion4swfLkwD73722PQzLgAYjyyc3gwPPLLPCIFfTBdLqy0gTXuFovFUhNvoNd/2JLS9TGKx5KlaNxZZEWVXxPRm0Q0Muff2Yt8koh0dy/vICIwFHl72WCZcuB16Ofvohhez01l8wbqyjw/uwz1EOyZqzAIaoChEBm473VhvbbFYrGUDTOW96B/7Pw4nbfbc1S/uoZKjMk+K8F/CS/1Do+QfT64Ze1qzeIxrwr3XtissMc6AHnxnmh5S+ZxPpvQNrcS1fYz0VL3o0GN+z2w8eE/deCN0lE47mfgtesyEoWRxrEFdRaLpdUTiaQpGk3S96s6l2o88yGElXV5BMbRK6QvsoKIrkIen4fO+KUak9vYQ94UnupAzHQPmvf+Bo9ZCG+zLO4Sn6/3Jh5sqP9PYxN1OOoc1hHRrj7e99OwDDtjjbvFYmn1cJ49EU1Sm4r6Uh3iycb9ciJK+ByRqsp/iehi9KX7YRtoth+A/LZb7j+o3doKD+ZPRLQYxv5xVMu/5+N1ee78czjP5yj+Dn9Gv+imBLSwxt1isVjKoyDsEVR+h/X6fyWiB3z8bk/kjvmxGxWHLnjsLHjFr2FTpLNRqcNm4QlELsThMqaH+XCqJDRKMwBlsVgsllyuUhSr8VNgtosPw8754lvQ931jEQ17PnZAiH0q2uF0B998jBz8nSEd3/VhT5Szxt1isVjKAw47X2P4Nf+G1jBWlFNlL4jWcK779IDtdWEThYjM0+g7P0EjYr2WiE4homMC1h7ksshn/YQW1rhbLBZL+XCFIcEYzlHvi/yyKnsS0SsId7PqW7kxDJX/H6NdUJWHEQngUL8J/oAivFCxxt1isVjKh3ropgdhBowze98q9IdRdPrDy51hyMW/jrG2KkxFmP7lgO/NBX+PUgGwxt1isVjKi48ggeqHt6Bkx2pzKpyHHnsOZ5uA2+zmBvj991ANzyNXg7InEX1GRLcqjsJdA7ld1vH3w0yD59ETa9wtFoul/OCCrH9p6sQ/B49dJSQ8BJK3/8As9SBwwd3tRHQylPYG+KzKfwj95EPgfXN4+24imh/w+E4jok80ohK/JaKLNN+DUymHGs7dS7GtcBaLxZKxkhGKR1P64qzF41IiOlXR+D4BtToVziKi63z01ItMwHAUnmL3dR41Oc5jH6f5mmJI/FsiugF/74rxrsej2K+Pj+PdAvUE/Ln/rPD8y4QBMSr8LuwpcLlY426xWCyZMGaaGpNxSqcKZt1jmKjGA0YWojp7BjzdLzzGtxLGmqro5D6raNgroR2vugnIZQF68V+G1y+jysfrd5RUny+CBj7L2R6ECnk/9QF/Qq/8cZDf9eo0aMImy4uTFWscaqDityU2LQm0P96lW4RnjbvFYrGwEkub5fT49OF01BYf0Xa9v6WGdayeGioXIMSbT171B+THX0Z1em6O+S+KvdvPKz6vJwyzn171qQiZ36nRu82GS5feCs9ZiZD/Awjhn0REx2q+zwjI0f4Ks9dl/B2bIu6pl3EYUhz8veUyFNX4B+HvHfJsfjbFuF5lbM7dYrFY2EWKJml5fQ3VNVZQJBq6Bu3mEo8vjgp1NvxPIZzLRV8b4+d7YKCLFx8qGvZd8R66hp0jDCdCcvYfmqIssnGobrAR1eFdeOCDfYjR9EIkgD+fyibtXsXixP3x9wpsOl5HCoMjOPsRUQ+XqMZZMPzKWONusVgsRJRKR6gy1kw1icZC6MvriNFsgqKvSSiiUzEkczClLOXxvLFE9AIRddI4nqWo1t8Ox+LnbHX28Tt+Z59PhRjNnvDIdbgbsrxenIgaAy/ugKEej+gCH5NOEaVyzsgad4vFYgFspW6dtAdRU5SikdAs/GgMVtGlHYxqX4/n1SPEy3loGUch7K8zpe1+eOrXK9QEeH0WXYKmkd+EMWVVveUav3clhul4cYSC0l8PSPX6GTizK1IFSticu38iCK20EQofeuHPCEJoCeyc05j52wX5FEIIawleoxm9nwshMblEYcdtsVgMw97O5CV9iCIpqkg0UV1DZWYcrGFYkz1MWORmosdzDtUUU/kROV+eW24CP8ad108T3IZNzQ3YBKlwCdbzCxU2VR8q9s374Uh0GnhijbvaBcXtFd1gvHvg37rhzwRaUaI+K0BF0jD68yDW8D7+5BvLYrGETPuqtTRrZWe64N1f0hV7P07V6TTVNVaZNvDs/f7eZ1GZF7ejOl7G3sjlq8Lh5jOJaDaZQycN4BB0fRWZjbQFt739k9S4ANPcrvFIAfwOBYZhoFw7EBm4L7f1WVxgA/4BiluKBYePxuFL9WovsVgsAWAjnkxFaeaKrvT7oa/T9b+4j5J1FdTYmDBt4HXkX1VhzfQdFSrB39AQpvm7YkhahyhC5LoFfD+gOI4NrEl2gzfMzpsKXKT3oEJundvfTHIlNhhK2Jy7nIFFNuyEMP4vUVX5NNSZLBZLCKTTEYpF0tS//WK6YeJe9Ndxv6JYZSNVV9ZnfmaQcYYngzUqzHrnqON/FQ37SrRvmTbsTi83O066VPiomFfhHdRBcMGiauSFo7kyfm840jFex7Az1rjLKbW89yHQlT632AdisbRU2D+PR5I0oP0iuvrT/ejcV4+htZSgWIzLZoxyvmr+VIG/oV5HxlOKFecrIADDzkRY4j2VPh2dsMbLfouohkq6IoLaA5mnX6fYRqfCQhTraWGNu5zwG2L0qUTOh8P05SOUabGUmRRtLJqifu0W07Wfj6XPfxhAFTWhyIJzr/PbAV/jY4XWuluIaCeF1+J+9+F4zbCo1QiB5659Kop8fmmAEeXWQC/aQPSHNypuvClI5PqFNel38aOfb417+XIS5CctFktoIfoUdahak9WcD2ern0b+PYgHz8VuMvZH+5cXszH1jCVww6QygG69H/Eb3e/jQEWjvKuC9OzF6H7yw2J8d76+D2vcy5vjAox+bKn0hDDHpQE0si2W9RQgPMb65Mcoqs7l8m+MLZVJtqo4AVMggVqIzpyNA5zWsI27wx+gGucF58F396hdYL16Xd5E8SCrAPrCGvfy518Yo9ha6QExjktxQ3yDHlYeyfgYIhwWSznwV/Sf8wAWFXjQzBUez7lJoe1sNkR12FMsBLJQdqkYd0K0gzc9XjyAYj/Zzz8ldW5FzQPn2n1jjXvLgNWiWhvbQyziC4hxXIQddK54BBt+i6VceAYeG+tbeHE1pGDdOAy93F6ca7iy2wsvhT0Z3amwBdV/V3heb4VNFuvKq4bhz4CwWSCsiI1ZkhjL96OgOlfnslNNQpShL7SjVftO8zEarRncLtdauFOxLdB4ibPFEjJLEKqXsQAheTfaK4aVCXn2ZxXe0xRBiuJ0pHKD0kuhvdCBxXCekHjob0NfYE+P7/QlMoQ17ub4H3bASzCeMQ3D7kU15hTzpKfDUczhhzNamXFXVfcKvAO2WArMdlgPZNyIsLwsZ6yqAscGbCtEAE215pkeGuPgpz9el01QA3GGZqTgn3C03LjMw7gPRruzEYlfG5Y3xyQUPyyE965i2AnPmwvFI9Yl3pmIPvHx/qMD3jTlBot2WCwtEZ4aJmOpRyqur4cGuluaiyVTP0cBWJi57SC96iYlaPMZ9evQDniZjxQAK93t6yGW4zUf3piqnfXczVFjUIloP3jhQzRvGDbwT1LroBQ1CCwWt1DyZgjz1gg93guwuV+MVN53giKljHs9nIe/BihaG4bHqSjGuw+RSJN0KVK+3o1NMRL2dwY2NSwm9Irk5zejhc6NsbhWpuP/OyKnXyUMK6tDPcAcWRGkNe6lyVIUh03SvJi3b0XG3WIpGImor9KNfVDo2RctmjEPVbhvsHhXeWxq2UDIukdONCS9faMwWOVpDLQqtudu0mYNgkrgoQZz+SNhoDlNmw9en2cS0QDJa9wMHf3hMO6dcF1E8GjGdbAExn0aRIrYMVyPDcuXLiugT6zD1iEdi8XSqqlrlnU6SdtUR0HyNaZg8Fj+dKjChLbZHlXZvg7Whb7w4CchVM2bh6AEGYfax4D0wBC0p7FRPCGEIj2ZHn9aodCRp/b9Fjn4XtjsRYXPHYcIEH8X22DE79Oo31qPNe6lDVewfq2ZMwpjsAIJF1UvPHoKjz5FyPenyrSgrgvOl3j+egmhN0sJ4aymN07cm1INiYwkrSJb4GEa2Qz2TiHqOnRGHn8SZpv3KPAsd4fKACm5XVDb9BFkf4P028sYgdopknjvqRAKjDcI99uwfOnzlMY0oD5oqWON5KDw7n9LXDAjUaXqzLLPhTeJ9dA/XoTw4psozjGheBXHgtDk49qtgqfgtZGN4rHM5zE6XQ/tMUmwN5S4euDG64Dj6IRjSuWxI0uF3Ov/0OscSMgiD+3wOfPFmROIGCUVPy8XHG2Oz/Q+dLDdiOD8NLm8r6xf2y9t8NrJPMcSxThlT5LpKK1rrqBoRRM1r1NeMseE4Dz96FFJfWJAr1iFLvBMz8CEuX9ryqMmAm5iHV16LkJWZQ90D7BQT6H4I+6JfMxCa5xXR4Que4hjhK1xL310KufTBgrN+qEN5CC05OjQXVjYzkbhx1MIGflt79gOOag+2ECksTirDp7YGfKcXtd6FM95BJuppEJl7HBsegbg0T+gXkEHFPeMxkK9DK1JPBt6KgWHvbr/w2fNF9GoQq6PF+6JLq+xL+pB9kXY0HFul0K+lBeuXPZCoRGfo3zTV2qgBPYbg3ndQyEsUp3nszrf9ftIfUmV2dok6mnWqs702ZyBNLTXLErVK0W9+dowDd9LbtNr+Hv4FRUO9uRPw3d2FxHdRkRfKvxee1znQTx31Q3M/gi7s5hPoRnrsQl5MATjvoFSaWTgvlz5b3GBpyh9oPjcG33kyFVDPBxGUmEFDIySR5JDW/TpnxHw5nNjPHJ263eWivwX/f+FZBOPvOYxuDkLRR3UyFTUstyoxVjL7orn/Ejh/2MwHGfBgLtxNSq1c/lAcSLZJQqDOFT5HpETL37nlQPl4TFfL+lNl+z8JF2811NUv0KpMWaJRp+5KrtLJsjprBNhsA4b0VuhGulGH7Sa+S2qS6KO4WMPo34+nldMzkShWz66YiNscspdEuc3M0HO5txLn7DyQrm5qM+RUwvDsBNutFckF7sbhY4urVUo2OGoRiGphtF7NMD5iGtoA8RzhhN9ggIkmWEnyYLdpHEdmmBLRcNOKq1PHJaPJxqpQ+U6nUyp6YmNCz2ieFyAVUxq0KM9EdfpDhInon3A9bCDJFrzNka2jqLiw3l9NxYpSgzrMFVskbTGvfTRqXyN+6gk3R899RwOLtQwhmc0Ni2FFqvh3a/XEm4qdKzLUT42Rw5pDSM7HzUDXNB5P/qeVXCr9VAZvuGkYIL0QPsJibvlRX9m4DeqqM9ctTwKVgFuIbuWzPEhvON8RFBhLeMVyKMW6jodj2sn18jLFNxUOTGPwt4HSFtwuqwQ3I9uCFkadIRHB9NbBo/nDXx2jt5msMa99NERslmpaQwPwC7XZOuMCgdDQ7lcrz+3vGchOAV5xLDzhRMNRii8VLkc2hvy3mUSnyLcbzxB5YndalbRw1/tRPMWdabKSuWv/1wI0qyi4PCkQzd2RCpJ5tGNxbEchILNsEkIUZ8XUO9xNQxiUI6A2tst+P7uU0z7mGAyrtEToOTHgkIyWJBMZtxNzL64DZs7Xv/XU66La2uCtYZV+c5Db1qkN4rHisUYjcEWpUahN0O5XB1yVXQ/w62N74gehQcy9S4VqjReY4LqZrg23kBTlvSmtXXVFI1prcdPIJLAUZCgnrvfzYyYIngehpAHLxWK/fF+fzF47+yKKKCXLoBJ/o3OITHaw9ECGbKiuYka433zMQvFgqfniyBY417aDNVc7KZoVMs/UIC2GS9OwkQqGUEFK8JgTZHfv1tOwVupEJPki1Wr/WX9wSrsoKHqqNyJEokQrW2upEe+2TFTr51OaS2d32CTfoBGgW5ucSAXQ7qxh0LINjffewo8edOtli2R+egOOSeP8/ShRwHzCElhZZNq5CiHlVANHIZOpLxY4166sFG7W/N33CppczkBlbelwH882sc2UF0qAFUKRWuZatQi46U/Xmq8rdHOw9KnflHdDLP7PU71RSOUzuTc7566C30xux9V1PjKzLyIQq/94fGpCixx4ZXbG3aA7LQb06HE5hZVGFaECN7tKL77i6K+AdfAXI516yqNoVwmuAPXpFuXz/Jc2dc8qSaZmNF7mjoH/4DTd55XNMz2uZcuj2iGnHi4w2sauUC/fI42sVTOBTxQo0JZpBe8CLfZ1F9jMSwU9Qo5Ur9CNw5Orz4FNGI9SmSj4TDOQN49jjoTHWGU3PyzCjM0Cv0ydK5aQ1PnDaRPftyMhmw8i5rU+t3z8RIeW8Gj9xot6gwRycdQj4r/DzwKKbk49Nf47q4NWWlyKe510dt8DRs/NwnYJrTCcjpB3CQ9iLbfsPgeBpTbQr340GON2k5SuPmlwnr0GtI6T2ukt6xxL8EpZTvA0I3yUb25QjHXza1COizDjvk1yE/moy0WmjNQ8KLbD3qzyyJ0MfJSm+NCTyHidJyiJvRseCjVCvdCAzZV3KMswxHm2QPe12r8zjIsYCuwQZiNSMAswfNahbBaVPC8NocYiE5RUBW8LjYSxaAONR5TsUB9KhmWQehLXqJoPPZUXFRz6aBx37yjc8+y5z57dSca2vtrOmjLj6lxjRGV52l47O5h3GcESGPIcvW568er0JEPQ1diOsSMeJJZbt75dhjSfLyUY9idDcs22DCqdnLoRhPP0yiE9Eq1cAHeDZKUTbPEFnMK5UDygTXu5lBtM3L7HvZC/pl3trouQSPCNSroToyaBO8in/KYyCosmO9A5OUeVMyq0B+bmnw3Cbf/5FNaGqto3L+QLBxBvuvDUKFcH7AoxgnN3QmRGlZyU2WLIhj3j7HYvqDp+a7CBoC/Ny9GI7Khu2HeRkOnQavHOEXRjIE/e+hr1K39CqpbXkuRqJH9fBsPDzTpYdx5PKgMNh6qLMDG/LfYzJtoS3RC12PzGHYHmZSs2721FjUM73pMWNNhNsRvHtP6LaKvsGFvJ5k+J4uc/CC5BtphnZFJO+fFGndzHIkvIYHd1gIUGLmFX5sRThuEkHaQPvNLFTXc22AToco09E5u0GKhwEO4trzaRHJ7Y3WKjaIlcI1r33AeXITKao6uqGBqUVPhQ4Rtnw0w9OJzReO+GfqDp4TUAteoc61lFer60B+3f4lOGPUWNSytMmXYCZEM2RCWJRKj6HQ2uLEIrVu63I2++LtQSBaU4z3a7/jel43NrXXpApoH4ZovDKS57oU2gZ+U20IUPLrJdfdEEexCF+dljodx559Z415E+mrOXjcFC9Bcqfjc3TC8Q5XTfRh2sf1mX43Cr31hsE1PSyrFansZ/8CCpnLcJsZvevElvBn21IMyDiqIXkRwPYRl3L9SiEStZ1VjNW3bfRadOfQNorVRSqViFImkTSq7VXp4vW7a99Ue18B8n1LUjjc9FpLDVweQSb1Dcu20xQZClo7qj2r/I+Hh5jIZqTu/0szf4/p+nIIxU2LcHe/brTPBq2PBVwTFVsuXNwsRAldFJz/1vkYRlBvcrqHKxgohxtbABI0JaSYEMGT8GwuvCcPuhPRVUxiyCvB8OLOtVSMInnAYnk34vJWd6V+7Pkr9+86j+rXVJgx7HMc7QGFSmWzh7w6P0A1Z+5wqN6F4U7XbITdC4jbbvD2iAyr1OSOQRnGTtL3OxfCrCAONNmDYyeP9Yx6DrryirroDvDJY416+fAlBBZ0+VZ1COt5RB+VzTGRToUJTja+lsrrICniE0OQR6Os1oa4mLvZck6HCLiq67wJ7aOg2KA0vSqWjtLy+lk4b9hqN3OQbalxZSeQvHM8RvaNRV/EGihCnoJ6FvWLyufB39vCoTSnRfY6iv79pbigfd9nM1WCzsJPmOXwLIe58oW0uylNlJeoKfuExIEoHr+4OWcGkdCohxtVOxfXyJlII56AzxLXGxIbly5O3kKfinJoqCY/CDpGUwQlTr2p4YbJ+UEvh4O/syZBee7xiqqYHNqOy6V9+vJt61WI6nuHes3YF/Wu3R6kq3kB1a2t1vPZ2iKrtB2lQ1eJSnTkGHQtcE3I5NifXKIoNcQV+Pq7KHU+qSC3qPvKNtn0RoXkvm/YKpnfK2gv9sCyAcfdaxxNom3T7jl9FYe0GETbruZcXKRTP7aFp2AkqSTwOUIVvDS4MSoM5gOqM9pb+HRdiEmCxkAl++FWri2kMJPlURRuAQ/JL6tvQ6du+RVVt6qihTjkc3xmja6eivXO/AIY9aBeOV0un38LKXfAZZSx0cRB6o13WL0e7DAaa4qGCWE9Ef0QdgWnDTiiKayqC4iXn8k9FB8sU1ElFlTz3dCRCkbSx4hGLPxrQQ/x39IWSz11vZ42CI7cJX7pM1xBtUZk1Xq5UYpHvBI+rC7y7jvi3rghXdjPYguSXMDf9k1F8pFLpv59LG2S+inHVlM4HqiH5WCRNm3WcnwnF8/+zwVe4x14znF6SFZj2KeL0wkuRs77Zxdh+6lLhPtbA5vVIF+ngj1zO/Utoh/USjAmC14wCWeGjqQj61himw0p+Z8YTzfJjSsbilIpEKU0RlYvbEg63YdcZBJ0qeb8V8m475hWK/cddYQCDeCvFpj9CaE6BYH8UD3XBn1Uw9EZUUMqQZuQOVYz7NtgArVTw8CMmjfvCura0f79JNGrjr6hhdbXq2tc7hLoRWd7cS+chbJnWT+HFX4uqehHewOVDtehRxjYuOgj5itquUOzQMLHONUuiNLL6kfmGVCsduPBw67j8ok0TG3827sloLPPg97dGvuBw4VxQdNr0VHrmVVkBD0LFuPfATRBU3rXQDEYecDT+LtPKt2TbN7k/2YvOSEE94/E8r+FDDstV00TNqSi1SdRTZWUT1TdUEKmF5CMwqCbnIci8Ly9t+kKkd/j4zsb9fYxCxMGENkN3eLu5TkBucdxzBTLszpq5VvLdy76rZR4bA134Yq32CL9FMmH5aDpFiWQTVTQ3ZttDeESSJRdTYex8DDcwBUzHGzY59Wydhh5yUwh97mGyLabrTUavLFevWsPuDVf8qnoI3AYlI64xg2Gy6sYxGklTUyqWrQ1XL6LjJ5r2fMrFk8qVuXW7j01E5ZIu5yXXOM6iwpEMsHaxHTZpVPm1eijF+h1jnjHyzY3UHEtQOhOqzxaeWDI8jL7uOELg3bGrrYXXLAq0NMBg60z2Og0a6YXAZBdFtIUWiJ2BfHBrDa8HYSbUDzlHGHQQzBANb1C1DS+Thmxk465/35iaV+7gNi6UQnivIPBsBBFOP+lKzaoy36Ulr2+eY3pCQ18/CN08IjYJj0Jik2sk25nvtBbxTHEdpaki2UDJSJyaYqaiCC2CJZhgpkocIUfV4qnRyKVwnstSXK5Dn6nFH82omlcx7qOwaLuJhOj0SufONXc17IloM/Vpoy3uxuJDpr0dWQeJTJaWClS7MgJCN9sramqMh6MStO8+33nOHRXcDikgnoJ5K4VLR8mGhjw6NNoZ9tzZoWr0VRXLF38s1UyJVBO8ehum9/hi3RY49vZ1p6dZigvniq1hD06+ame3TfD2Bka8LlbtNEmlI1QTb6ShXWfrmuoFaEWaV6B0n1eKQXWIjl/+KFGO29plkMprBgr93Aa75LtOalBB/mTI8uBeIfmVBUzpPsobIN8tL2zUY8nmTJg+bW27X27QVCP7VYGHhVh+Xp2so4Rlced1jUXeTaK1BgIxqpsJVv9TGhSzpH4jem32VpktezqltUzehWrukyTjkXXoHKCgjqv3w2AAhLT+JQk3d3EZUrUIbXR+uR0pnXzS2jKRrsNQcxE0auAGK+clfBZGmmgBXoExybvDTnwVqJ81Y+BTSYonHQ/eosn3mrrGcQgW+EEnp5M0vKNNahxjKQsrnW6gB30JFrh5SLF8jFDlY4jk3K9qhMqcHzTGkbJ3HnH59y4m9eQdOlauoSlL+9CCxR2psqaO0noezFJMVhuCYU1XQqdCtbBURKYdv9Rg+6sqZ+GaVREN4n7rfFwLpThdWH/jLy4/O0ph7WiH8PzzIWx8ZN+TV1je7/e0Bsp852Nzc6Q4AyBw4RQb9Xgyu4HkQjsOY9kiOy1uwUhEVY6HmI1uRbtOhEBlTroq1ZI5x/mOsVR73CMuspcy+EZ4Ggv7RHy+5djwpISwau7mZ3dNXfVy5X3FvvBNIU2cK0Ki6rU7FfrKdKxaRxMWbkz3ThpN5+36LMWiqUy43gfvCgOYesGoDEDbZyd817LUQm+PjeJySfhdNideFxbMuZGIDtb4nf2JaPM8tUhJpLeehFCR6uZsf5dZB/z5T9E4rgNQ0PwXiUSuLl6bhUUBNgYLUIS6CJvimRhzO1s2sMaIl5Qx8JyDby7Vdbmk+VRTorVrnspUFbyKb8IaJdpe4/UWlrDXuiV62FX5GjnAw+HFTYBxmo/PuRiLXDJP9KK1zHxQ9d7imEzmN98+W7dimvvce7RZTv+dsR2l1lVQRczI2jYXXu8jKMr8PyL6k0JY3u16WOyR3+dNkQlOxOZUx7A7sA59PuqgT3C+h1e7DGOQd5NMFPynhgMhGtT7kJ82kYtnlUSSfNbvA8huXwKhpkMxROYm1DpIJ+EZC4HaIrtAXK/5/LN9nOC1GoUbJsN5lRqFPX7CloVCZ1zuUngHbNB1aS2G3fHGWAdBhVyJ006akrNe8qA/Ix5N0ZqmKvpowQCieGjRSK/NbCfJ4t/kMRVy44BrfB9sRO72aMmTwffBcZKf/wPFdyfD2D4mPM6ClsT5LlK2zJ6Y8OaXo5AW87NxydV4d2OVRGkwquD8eE2Nc31hY4hFdta2a/GUZhvdpgpzoPMZHNUe060MirEM0rjOTI1fDIPemps1E7O0WzoLNHLh++T0Ee+IqJAKTlhcC66Yn7GsJz337VCijZK6hXU650C2eLf3MBw8LETmTfr13k9BQSAPagnKPWj7lXnndyEiebTwuNlDLXMLpL1M3NvP4P1Ur6lcZ0jW1jlTsont5PEdJf2ui8av1myRXTNFU8mM0I1FGQ61hNkWt0rjIulncEKbTh9yGMbdlOJdL43340pwixofaZx/MXrCYVpVPiMfcI69S+0KmrKkD/24oDMlKkMRoVysoKS2qUeRmRvVGmOexfPMoer/GGyl41TTs9ChN8U2MMhtDQtTfYLhNroRDllXg6xroofHeZ6P/Lo2oVhfNurswUfSKVtFr84jCtWvucVEqjOs/RhP2U5bBw6bqSLNIflU51KdhOeFV9GLQ7NL0Y8lP9xSpYpoHFRHvM4KMEmRutSsonHfD6Yv5/WheFVoNUVexa48gMivXoDOoJbDkUriULVpNkIltwmtjoNQQ6G7cVFhIKbd3aChXeIlfyz7jtjjlxnJtN8NTGiutSNVy+NiOR9vUco3c2hKB69inFx01O2C5LEctoXCmAprNYueVAsEawscAYi0ULndsOB8uKoU3G5CFThfWyp8GKS1s745Qd1qV1C76nVESaPr2GaYWPaRwmCowR6euyzdxoVYKhvXh9EnzQW7YRFFhPJ5n8Ow+qG6/VloHITJ2djojFVMGcmYEKCWpw8894eIaIxOrVVoxj0zcIZ44Ix2HUtrH+3qJUwhcgjEE0yHQAmV3vkqlHU4R+NinK1Z0a9afNfdRyVtPlRbDxMFWHhaEis1wuaOEtogjciNTifKz8RsvlvWk/bdeApt128GNdTpilDmZSQKxyaiWn6EQhHlcElrZL2HZr5XbcKeKCjTbfMMwgGo9n4YXrhsDWsHA3sXwtuy4jzTbAEvnmto3L78iMs8ewcupJsu+Xk+db9cuJr/1+gueR/nzJNQk+LssbMHz21yNjyvbOC491OVKk1Rm4keObp8hTB+CkycghydG5HHM+qg6o110WxhMzEGVyaX6kVjmU3GM4GS5juKj/pqeO1pyJ36YkVjDY3oNZ3OHfEyxZvTQQvq+iCPPR5aFTobwE4eoV9ZaqO9i/GpRgHZ60VSvYxiQ/EsjPYbSE3egH76e/Bvk2Fgf1tE7Yff4zjypYKGe+gJvCNJu3TysTaNxDnzrA0IveKNDTwr2LGSnTXwSvANp8PJGhd9GjeKKnzTj1Mc8JHbF8sLmQ5eM7uD5OcvNtBiJms5ykVHlChf62Brm8jEBk+VGzW8zEmSFiRXIiimW7CiG10w4kXaqv9sql9XozP6NZejEDXTEVohDcEezmXLCgIOzPn/MTgeLiArBTqjxudohMPPQuX8HpIe9FUwcIUSVxmIzcblOWsJ14HIDNt6xbg87BqgaHEHrOWsI9Am3xMKVs7OBXYW5YVOR02Lqy2P0Xj+vT4uok8gFDFM4nF0wU7yGfTF6jDVx7Q7neEce8FDOQBe3ybI322FnKT4cLtRv9I8ZyxSokIHPP84fDeTDUjclhuTPBS8RA7S8HY+9BMFYRO+tL4NnTbsf7Rn/0nUuLzKr2GPYbP+qGb6LB+sZOfGt7hu3DgU7V69EGJ+RbPQLggp5Nh3w3u+YOA1v0J0bBTu50cKVMQaJaIL4I2PwPpxqkcdETtHbvBrBOVc2IueRRHMyOTf06mM956MxjJFdhYp/9asVj8NAxVUTuw0XHBeRSC5Ibw/4/ENCngWoXezE/JigwIo23EoThdZf28+dhMKstbAiOcrtnsM+a1UnveTSX3mqzfYDJudCUih9MK52gR/d/qQOWTbmlmNc7Sv4dfVqTFZT0MyTj1qVtIVuzxFNZUNVLemliL6xr0TDJlOK6iMHTxG3z4u6Z7pgbqGREh6825ps/tRQPdFTp3Q7ICttrw+zhAM/a8RGv8d1sI2FC4jFa+t5ySqelEfLXeya2MCpHwnFFwNi2WZ2XtPRngz+3P1eatHvwGvQq5QJl4hMhgXimrI/XJN4y4yyHALCnsdD/r4PR3Rn1xkN/8vsYmZm0fH+1PN87Y/HpxH5wvfVtHLhWZMGvd1fsVrFqxrR5ft9DS1bbeKGtZW+zHszAMGDTuhgHCUxLhzpfvVkmisaiunCR6GAf7cxehPDGjc87X0cvrlPCK6E0b+JMM98H6Q1U8NMhw96YYI0TBHza+AKjM/Fdexg8l/Fx+2XW4DmjBOUQe3aUn5eM+ntxwGHNbyow4yI88gERPUSXLeOhP8chdma9jl6NSCkGKESqbnLdWVb1tZR7F4itJp30ukiTGeucj6z783FPL2yyqsWYORJpQpDwaZH9Hgoeg3Ay3CgyFb6+Y5h808TGxzQyeVqgpHG9fnvwsqIZdVr2uiiuaGTIuc86hINmQr6q2Bz935O1PDVNhZs/Ly/zRGboY5EU9rWlfOhSzLZ/mlRtI694Rmrt+iznTDCoW+vHYmGklTYzKOxIzviKKfkaZe7AO9eFP1NKYiJNcjB/4n1M94oVpf4WbcVdpSf4BuPefFL9RsszXB/ZJivwgEg0zzrugoFUEfNuJaUW9b5n7W/8shJlWimtWv65CjUdWbN80rBtSqeHMQRj6HK9bzsQZtMZZwIiYmZXt9t8AVM9/vQRVmdstyvE4uOmwWIp/OveB/1HxfnfHTuTRoFs8tg1jQUEQ3C3F+0libZIV0MtVBv2yghFcy4u/ZufBNmdnw1sCv53bNG+FYzYvmOxSHhBHelsHh7cMM5et5d26atEceTVdJ0KJ+vZtglcZAmrB4V0N5jzTbLGXrNhuyMGG9h4tQpX62Zkuq+Bp+qddsS3VYirYxp8I9zDXvHg+niduXTdOYGy0qGePuwENnSqi4TqfgMIze5O/RRqITUs7tafXiB/TQms555oMDnZcid6g66tOLS3VndSvgJepxFooew0Sl9U7n/o1oXKNukYuw+QxFYUH5AgWQvuAe9+p4Y+bsprkS2H/kzXdqQMJWHtKtj/k0uF4swFxxLti6zKeBFaM0fuFisSDeXxMR3YHOgrN8jmX2gtuGZV0UsuiLX+P3ZO6GoqRmR7PHzsNmYskkNcUSmUK7IqNjgMI62Ks9LgYTM9E5j/wLvM9fNeZkq5LEaMZLUehkknr0AD8HcQ4TpBTec18UEHFI0hQzoT71FBadw1H46DZLu0rzO1B9fpCCp6D8FTUP3NLkl0BGtSKWpPlr21NjY5yiUS6q821LTsN1PxKertM2WoFFPA3vfg2iUO+i7dRrg3OBpI2Kw9ZXGoyCcC3Eregl9zVXPA9B8t/s9Zvw/uqhQcCPI1AvYKLv/E6PWqazPbp1IjiWKeiO2ALORluXEd6fQ+PgZyqFka324uuglEhn+uaa4glKFb8nPopd2FGodk7m+SIq0ZZ1kqbQiQ6XQPWN3yufGlAcx/YsDGiQXbXTDrYPQuftAhqrl9GiYdq7zsfv8eD+cb+Mw/etGlLdA4v44T69oY+QK/sAi3vuBd8btRRH5WmN5KLIqzTejyt0/wYj0+AS+ZkEj0ZXR8A0R+N4B+P6TkGoQ8XS7h0kf9+UilE8kqT3fnkVdW+3hOrrjY4K6AZ9hSS+6zl5vvPPPCY+JrFZcNsoVyDsHERWdhpy6qyDb3rW7R4aksO5/A+1QmFwDNroVIdd5fteNpOoIlZiE8f3tMzRMjJuuwSNe7bnna/2plglpSLRUgjTd8Giku9A4likwz7ITsIil28TkjK4s3boBZGVnbDI9sIOsh3eLy0sto4H8hWKVt7GuE0OTxaS9jjeXyCE2RXyvB2FY12J412KEOZX2P1+G2CDNhgRhN1Q0dxeOD8phInXwGh+DYM+X6NyuANkgEdjAfnYZ0FhWxiXZhejUKwCS9l1H4X4iYqk8VKc/0yvrx+S6WhmGtxDY++g3TedTPVraoNIz/rhWHTLyHjQY3bDIYga6PIlPPV7DabOchkA79ZPe+gdmvM0dIkgtXkmlC1JUxpZVnB7qkJE5UpEZlqmcWcyBj1N1BSvsKp2pUe1EMVwDKbp3b1J2gkbtAgqaH3nZBWpglF3jHuhNLBbKjcrdoM8bmIe+dy17Wn3Xt/QM0dcR8mGiqwKV+GogvcnU3xMw3uXRVhex9Q3FbiF7UpE2cKmJzbVfoz7TQhtF4J9YIxVIoHzIUyzWrJmTvfw2leiqp+dosCUXEGd2B7HOXieCW+HzpQcdajObIRRL2XD7tw03yKiML0Aht3J6Tnnxxr2YESg9FewFjSWn3177iB6//utqGqjukJrcNTDQ5URQf+2DE4XqQz1+Bah6EIYdsI94Td1WEidiXGIoqh4lmd71Kr81sOwEzZqRgx7SRt3ERa6iaZS1sBbLK2TAzzEW0SMVKjHoqmMkM30Zd0plYxSNFLQ4t7DFYtoj/QYLzwDBYpexAP2nuvSGCDkH6TS3g+y2geH5zykZjujw8CLbZB6Yi+/5Rt3Nui8bWIPPmo9eIultdEXCmgqzDJVCMgV8p2q19D9X46i5nUVVBkrSPAlgg6M/6JKWgUvmeprPea9Ewo1Oc9eSOPOtRF+CFosrMMR0MiXGZ2l8MplXIYaHJV6mFMQfRrS4o17lkhmeMN6D97K1Fos5cjmyLdy+XmNRtW7avcDa0IYs8JcMb+svpamLe1FFAu95qcW2vC6rZU8T/wEj+f8FgbV6zlXFjAs79e4F6pA90jITXvZyBM8Pss2qMDXYRuM/g4kUVtSfe4y2KCzD8+69LbIzmIpKzaB1vbO0GFYIhQhpfBv4qIdRWcAC6aowovBbSYPuibeSN+u6EZ3TdmNbuk3M8zKkl5QF+PPTD6LzMZJ8tGz0FrI+gky/opCWW6XDJsVBf493ZY4lUmVl3oMh4kqdnjkowYRnMMVvrfyNu5MxmOPZEP0ZA28xVIusNzmrvh7R2Gm+GaGteTNDkKKQGkm3Er5DvDY/Rp2gijKjR6e3tOQavaaHnkhOkt0vU1d/Erz+m5xVOQsnEsv3oL+iIxziWhHCsaTfg18mYTlf44tsrNYygY3hT2TeC202tQ1J6hT1Rr6zVbvETWEslTGsSnh9qegHAbdeRnnQ+jKi1MhYxsmfoz0upCN+xWKhp21MA71eM62hqSUHQO/Y6sw7rbIzmIpK8LQOhd50KQCYkaYIB2hOas60wlbjqcdNplOzQ1hjI7IDCBSqcZW5UaITslgDYD3FVUqufOgP4WDn8K41SHl3Nsiv86Kj14sQPeGLD1QCblekzyLiErLNu4/L7JL2iI7i6V08SNWogqrMv7B5AumKEKrGqvpjCFv0DV7P0TNjRXUlDKewTxBwdP2Y6RYxEcGVw4cDJVElWK98VBdNI1XgZ9bG5zptoXBiJ5wZbwXTYiQsKy2DJ4HsSWZpZvHGNmWZNydIjuiCha6SVsPvhxxxIryPSwthrCaxJMIj7LioDG4jIfz7H8b/kJmhWxqTGQcCcNdA34LrbwYpvDaS1EDodI22B1S0l6COYXw3BcZ9txPJ6JPiWi4wnNXQvqZZ0DIODNEedwjdDaEZW3cGatkV97fWzSdpHiyOTPqN/fhPM/i8/yWzrnjUKZp1sKwq4SYtVjdVEUjesykdCJJyfq4acPutDqxjn9YnKIg0boY4WVWbFThMlTk87wGE/gRzckd3OWX/ohw3KI43pgjBgcpGPZRijn7IGzWaoy7iC2yKweDnr3k4qmmTMQlkWyieLKJEs25D/5ZY3Zaj/0+lXEMOo9LdkYml8D5ex5TwFSkUFV4F94Wv65RYpEULVrVmfbeeCp177aMGhtDGW3/PNTjwuQGjCWWMZuIdiCiVxVfk3UHJhLRRYpGUcZ8H8Y6qIBNJdr9vtAYoz0Lg6je8XjepsiLR0JKSTgdBje2OuNeiCK7EvOGys5Lj6WbKd7cRBXJRoqnmjPfU+bnecPy0cxGLWPgM+2O9rx7wefN0YJwHiUS0VqMCVujoHd+DQzcV5qz4z+E2MpoTC8LdB/ne6xuqqaBXebQiO6zKLUmFK/d8Vq5TcrPpuYwqM6p8IxCJf4qTJDjnmoVEujv/lDDQObDGXmr+zt++TWO+UpMiVSBJy+OwRhkGR2hU8Ays17cjc3CLT5SDH/X2eCU7FQ4M+NiYxQxkO7LGvR0xhPKVNJGotmF1GePfZDfLSeyn5OnZSYzNRFszPlzO967Cvx8Pt+N8Uq5fef3CXHqbl7jGPJ7+rmmOBoSSf8UvcpcZ5F05n4oQV2INpDl5Kl9faAfX4tpaF2wmC+El/sZZowHuqEzqaBUav06kcuCNe3ogE0n0UO/uoWallRTMuP/hHbOVKa2/Qgjcw8RvSz8+8eKueL58LjdZr+LXKiogS7CaZF/+oiidIcHzYViqlyvqeAXQdX/n310JTyCkbpJhWjAayg+VIkCbC3o6veGYM6hiKDI+AYpkWSrNe4/jYuNUFM8kTEMQWGjHks2UxTrSoqilIzFKRWNZQd2eyyYojHnPzmfnIwlMlW5hTUObiPpzeJ8Xs6l8/uxYc/8u0/vO2PgozFKYbOQ5x3x82homyf+zjaMIPAmJULJaDzzHfI1kTnWIhj7bGFpCoY9e1w/e0ZmfHKCUtG40jXb0uBzFOVrMdmETXr+z9/QHM+cvxv3fpTGDplIDcurw4zWbYxNS2ehkn0dprSNg8f4mkvbVW/83BEEksEFh3soeKAEwZSbNY0uIR/9ECbLrVCs7J+mMClN5BoFER7C5vBEfBY/Gu3cEneVwvPaw2MfofDcZjxvgqQQchgGAQ2BqmMtHisQQeDiP2rVxj2fbG3Q3xcXzaw3xB58LOMNZTx5yQIQJS4aY681uznIelYxaohXEBXIi3c8lmz6Ap8Dn9B4vpeSmc1QHOFgE4tjdsMmeW/hfZIx/k544xV885Qt1mxaX+CXc1Dr35PfrzkWy0QlCmk4s0WJaUo0N8AbdT/XmU1IzjVbKpGHMMnct+k0VWY2P3xNRqU59+UNNRkjf/+B99C+235BDcuqM5u3kM7VDmib+h6yvHORqlDx0Di8+z9EPryYAwPBqRAvBqIH31EV1IGP/wEiegltdDImobhQlTMkA27aIUJxIIrf2pI+M1DtzhsrL2ph2FlS2QtePE6CBLNq62gtPtMmuC5UvrfWZdzDJesRpaK8WEiMex7P1dksNMYrQjcIvJBz3pXz16ykmWbzG41jg2LivbPLHr9HJvwe0FMPinNum6OJTIQl+/n0P6NOF0b2PflaiGXetxCpF2+P3eW3eJ8UjVIzG/pYtn/b7VjLfQPwU7qiQfkcRSNpWl5fQ6sbqujxw26nMVtPosYVbOBLru6Dc8ffKeZ6nfz6/kT0nuLzz0Wet8rn8U1AIeXTCCvnSs5yhGKAxutdLujeR/C7o2DMt0dqxy83othuneIsgP9ic6VCEuJBsrGwxrHG3QBei5+bkfvJwFeGuIiyx571otkQbBhYzoaV2ZP7yZvXOQYufMu+Uta7TW7gzRYT53NkPl+EUyhZoXDVz/eTx97kq0agGWkb3bx87rlz+10/Rutnr4uNKZ+jbKTjp/dzrkcOYfPPCpHOCW/Y1IZ1CCqwB7+0rpaSqRjdfcB9tN+QCVS/vDqT7ishw/6+pudLMF6Hw+NXYVsYVd4UBGEWPOKpRPQ5ogJX+zh2LibkL2F3IhppoCj8YxQIqp6PbWCkObqh27rJqZFPqEBY415ksqHUKDx4c97eT0N2mjJtZ261B44x4udmF3m1YkHnORlvnfPRHiHhYuEYvkwoGuHobN7e3VPl/7g9j2sG/FSZr/fiEQLnFAz/v9v7Zt8zez45bCySNawbGl2GjS4fI/8ZpBLeeV0+L9lwffYc8TXDn98J5TfF4gVPORgrMMxsavXPEXvwKxqqaW1jJT1y2H9ozFaTqXF5NkRfApsdZ2KYX87BrHJVuDDtYo058zJSJdCptYCIrkORnmqL5l4w7CppELfiSD5/a6gAxLr29yrWtIQLjCQlhTyxmdflMHw83SwvKkT7VKbYKJ2tZufcPP87P7LtVTlGKNOnnqREKuutZ1KaJWjYM8DwxbjvO8W932lKsxfPn1j4bIxjJLPnLUD7WOb3uIArteE5Fd43873j6XFskDidkWABH3QXZDsMsvUdaeFzJLieIQ0VzsAtbs6x8vefPT+ZjUMm0pPdsGV65ill+PosgMee9BfVEF+Hx742pWP0+NQRtG37+TRokzkZYZsit2b+0cfc91zGoPDsFcUOhGnId89HIaBuwZ1IpMhtmddB/vd1je6L81BL4DdFQagD2EJBItgI1riXAjCwsVQq4z05BtQPjgFmcZhsrjiqvMA7BskRQMm0DGUMS9YgOQYnoyjHRmu9QSz15Z7JFXdBg6NTiJcpTEsJ583EZ/r5OXVMD58/fq/shoPrFLIbrOxRCd+H8F38VNMQhlCTcKzO5s75Xvnc4PrMdIgEuD7DJnteUDyHjoZAr0cRqk00Zlrinvx6Oxrcfj5t3u9HStZx1wEX2RWcfshhmxC73x668e9rSPh+jl7tpagW16l2LyYzsTk5BW17Krl1QjfC7WinM8EWUAXk9ESo2LB8CWGiyI4XIxaJYYMR3Jv+qWAw68GxF1oSimeBcXLOaeTHs+etAf8W3udbX/VfytEOj+uzKV6xQTRIluYoJEHrEMqkyO45VISbZC2MFxsxPxGAU7BJKMRoXx0akeNmwZgXfYTDWZ73NhTQmWQhNmksaxsa1nMvJZw8Nhcxocgtou2xm1Qkg0ebKazi8HD2/1sGToohG4bO9uIX4vM571GG53F9XUB2W8KbPfbmM9GP9R0j4Xn1uVGN3MdPxXNmDbvowXOC4qkvt6Mt2y2kzfvPoebChujH+BCZUaECBXOsZveRYp+66BE/AdEXR1J2QJEv8E/Qyseh9CvhJTdqiivxbPebfLbUqbz+Oo2uBV9Yz70EcXKdmSp6z+K2bMW6I7RTAlKjllaAeE06ksFOMZ7j1Zvs/lgfOZL8nIsAMymLEO2KWGT36KH/oX22LmiR3ZuoEg8Tble7JOAAlP6oZOcNwyBU3Ie5KH2NTcY46OTPDDDHYF98dt1qeF2WoHXPzwAdJaxxL1Ey3kc0Qo2x/G1yWWEOGPVUtre8VCvWLS0f8fpkQ9fMnRcxVPoHqLB39PJjSa71aJKaiEJd+9wmt6y+DdU1Jej+A+6hMZtPomRDIjMmNkS2KkSeNqdF7O85krd+2RZjbvthfvpAiLO0QdQge6G4k4LnvQ4V599hXO0MtNixOl5QnfEh+Lwcii8UJyPCEArWuJddm9yGnvp6nWzrrVtKBMeYc61Gpt8/Z+1W8eh/6rPn0D+KCEto45rpg69vQ1WxJvrgN1dS19oVVN9QHeZbcq/5BT5+j43gCwhR+ynCewqpABXpWtJUYOuOorwe+P9cAx2BBz4XqYJ5qA9Aq4gRekOs5zQMxdGBj/f3UBlkHXpdXoeqXihY417iZHXVI9Qcq8hW5yI/nJFDbSHFbZaWidhDnylczAxy+imMn8+jd4YNrRdeCqUzwBzz17SjM7d7ky7d5ymqX1MT1ttUYAqejpqbE8Y/DIZxN1S5676GY8QeRnEZT1ZrCWwG/fmTFfX5c+GNxhHCjPfrYeh12VpxqI82xRYSsHjgLHYsgxpPZmecs8fujFG1WEoVZ4xqNnXUnOni4I4ERyAok3rCdex45Znn8ajaZFNWfKaEr3E+smQ6SlOX9MrMBotGQ4su+Gk5Y0M8ViiOeweqcC/4CGGznTgWhow9+aOpfBmNczMVQ2h0DXsSrXQjBcPO/AESs7kSu16ojp/VxlbLlxHZqXQtqWLd0joQuwN+6qXP9v1nL2f+/4wqniOeUyYdBTWJRpq9sjN1ia+joZt+R9HGKKVSrFVh9G3WYbAMjwb14nt4o//MM3xmNaa2DUUO3G+f9mF4tMFMchaGKWX6ENHBmHZ3Efr7vfL8bqyEpjz3+ecyDRoEfRXP74X4Plq0cY9A+Yd3iMEHsId3jJUIkSWLdwhlSxsU1GyJP2uROwutWtSyPreZLIlG9PX8tEHNppiy4jw/FYSWz3Uej6aoORWl/361Q8bAb7/Zt5Rs5JkCxj/DZBj5vSW909cg98tz0mX34eUBJFQduuFYTsco054w8itL5FrrQ0SHwIBeC6+ajW5QuLBikUQjnsWAHoNXP0AyzOZifA/U0nPuu0JooBmCCFpzawvENsg7xSFdyNWkFrWc0m+hg50bWuSQ4VtEdAdkMC1m4V7dXyEky9esJaT2uLVNFbR4XVu6ad+H6fgd36XmlZXUlIxTJKvwY5Iz0X/t8CnCxHfCwHvBk8/CWvTrsQl5ETUCfGw/UGHoAI96c2w6dsHGNgy4Yn9TImrweF4EgkMnoMXOka69EPdmqMQNeAacD3IULBo1BRAcusIIkM/ihkLQXjhG1RGLrZ2zoOMsVqGuQXSmBuf0ECwC1ribZwhajnQEPFoyHI7eDxXkbBCNkEpnBW7S1avp9JePoUiK6Lid3qXkygil08bLmm5Gj/QwtKm9rfG7EWy0w4KN13A8CLbgS7SsfYHHfBz/ch9R2gjWjI5Yg4dgTd4W0cBCSeH2xiAd1pqXkYai4HPw4vdCOL8go191jTuf0H1wYQ1EKwO3MTgyTSynNwehiW9wE72DnY4McfEx2eZgkuYyOMZS4mhBCON75ADfwU3djLDgECy4HMYKwiG4Jh3ug5BFmNRieAenapxZ2f8qXsomL5xjJYRKWzsd4VFy+Jjg2bGmujED36aigSKRVXTaq8dQIt5MR2//AdUtr6VI1Lj3/pjPe2YPn9XyfmmPwjN+HC/8+xy0ty3FBmClRNue77Mu+LMbvr8+AXLmpjhOwbiLzCzAmuTLuG+GPsCjFaYB8Q5KhBfzdxHS/l+hxt1ZikoFjDlBcIIXldk5z1mEHT2PrgzKyagMduiG9E6Y7JFHCvTGEjPulg3XMMewE0K3xoy7Y+BrEg2Z3vebPtmT9h44hdqyZG2y2HZoPRy1KAX6SHLR5cJwbDpKtpgwrrDzugjhVfG5EzAd6GvMxRVfb2M8doSqEudCDsKDby5r3Fs+Y4VhC3/IY9hNI16DhP7TP8ObDgvukRX5sUQKiVr6pnEjeHq68qKz8HtOIZnYxmQMVqnrvdFy+mxBP3pr+mA6YvsPqH5VaP3vuufOz8CZRqTVyqfKUZ9JCO3rwNfhKCJ6lsrQuG+LMn1ufSCETzjceT96BJsVLiaujD4SYdPPkW+xtHz2FIyuTk7QL05icyrCju2ha83DLMJgAF6/GRsX/v+Scc9aMFcR0UlIDeoWtC7EWnQU0oWsQR4K3PteHW+kqkRjKW33+qEITJeD4ZCdinW8JHYqBmggomcwCe8D5MF1Nz/bl6NxPwQD5Z1CqHtQuu+VO8/d8TlFFJfB2FtaBzw4glB34eR9w8RZQt/Hex4GtaiwjPvJuHfGIXp1tg3HF4TBmNLldy0Zh0fBJGpLCPYydfknUqmECWb9YAAvwQa6HGlGt8ADOTnwk1GHwZFmVbgFsGTJV8q5E0b4OYb9DFRY6hj2XLjQzhb1tB6cuosg14wf4x7FRpRyqnZNEocHSKgj4eIgS/hEhDxtyW+kOP/OPfCZcstwB8ro1BzowN7s+XlSGzcottyVKkm0Es7MUwN0jOZrhT05zqhxb4cCJ8ej5w97axGOy1LeOP2lhfDac6/fl4WNJOfeTbM3Ni9ppK1sOL4wtBUiQiVP5+o1dPn4/emHOd2oqv3asCfGqaBTwLYErV75Qg9boKaqXKlEMWw+eO34ncZrtRFqi0reuN8sHOxF8EwsFl2aDeko+N1UONftbwwoceUTEWFeQktkqeoytDQGlFNqr21lHU1d0oP2e/T3NHNRd6put5Yn6BTzkNgQqcAb450lUbftBDEWVdKI3pqm0Wdb8haSn/2HiC5VfJ2KUq5BEI37SCEs8WGeNh+LOhF4GiX7xefc9KaHFzhh0zBuaBlOKsnJtXcSQugm2ARCFISaFBL63C3hIl6jbj3RJQMX1fVtu5zmrW1HRzx6Bv2wsCtV1dYV04NXMe4LUUDHdStu+BHwugKbArYvf8N0uvE+XmcZ0m5XIUc+3EconRRkaC/BbHcVKVoeQVuSiJ7V34WFOewe4SDsjMk+S1EUsTZgiHUn5E0fCihOsxOKTUbjBqiFB7sY+Z0nUJRS7HzV1pBCHI3wGheQRBBCX4gq5JcgOKNCJRSbNoJ31VdYAIajyrZNjgFehe9uTUi59/Fo1xyGljWW5jTByditzxP684PWQ/eGtPEgbLBFla01yH2+i+9Dt/3LhFDHxvjO7lCooegMr2hrVBJztwwJ5+lDFD2+paBkGcFmqjeuo7E50ZOvXTZWvKH+TCgEExmLIqgf0PUTau6eNef7bLScJi7uQzd/uhddvf+jFI0mw1CtU+FmfC+sBpqPKRhM863H6/Ty4V3fgs6Zr4R/3zzn/1Xg7+ycPG1s/9TUje+g8ByngJyr6aMuqYvTsRaUtHHfTGhfegktRaXKftBHXgeDGcS4s2rSr6Gg9qiGcRe330NQfSkuPrm5rmHI/y5EuoMXykIzHD3nsnGNg6Dzfy5mQd+gINP5JoxSPkZIKkpfCFnz4E6MdtwR35FsmIYKCei0E74/L11pryFJB6Kd7hAPDWwnUvAZPAq+PwuBqEF+o2RTGsNG8WAYB1EoJt8G+BwIG/0Li74bB6FVKR9c5CvjDRfj/ms8eGF+sBCFeezBD+q4gJ6fsS2dMvcd2rTLXKqvL0pA7xkMO7k8z5yBp+DQqUREdCNVr+TRoXCieqsQ4VSF1/x8PJKn+E+G7BrNXUOmou6M1xBnk3ozhvQUqmA4kHEXRwneRaVNnZAbCtpr4lwsqzQ9MGdROAoXVgRyim/CO5+H58RRUbkbFqtuyOnshnxwoTS/T8CF6nzfk3Gcn2PRbobXtSUW6lEoOtkDu+LzJK/9MapoVwnfx7G4ab9E61FFzuKwNGSBGYJn/U9EDY41YNz3gidJAcc0xjAWkqMnDjMQPRoHw1OJ63xTvO9weMIvInpwVwGuF8ewP4K2QjeuyfGmFsEjG4/PVYONUEdsgHdHYdzNuDd4w5kPR4N7MTbdmwnn7Bmcr3w1He0k7W6OIxD2tbcBXDX/4+oO9OCUHenSXzxF6XWRMCRpVZiLdec+eKbshV9NRPdqvIbumsvrXT4WYjOhY9zdOq7u1TTuUY3nfohN6eWIIl2DqGDJE8cXzB6Ec8J511vKOHdFqoivNQdhJWeRvwhertui8W+ExHjBPAAeIPeJ/oLC5wJhtCALrvxFyBe7sSNu+t3gxddKvKXcMBnBIPFN+zr014vBUhjR4xCtuCRg9b7zOfj+mB7gdZpxn6Wx4XoWgiopyfd3FNp3OuN3HOMZBkcJi/0T8HRlOGHcF+ENv+Ey65qw2doOOddtsWmY7tKR8x4eDrsLxv0v2DgUc+3QokPVOrpvyig6fsh46t9lIdWtqQljYpwq72DjnvCRitQ5d19JBkLV+xgy5hZRno5rSnUoznLN962H4mVZEYUwBMvEOl6YW+jD8vPxrwTBlMsUvIGpCMU+LKQXciVMTbOHYNinYIH0MuzMR9h4ONrbp2PRV8XxqIpdUMg5OsJwoyAbqUFCeNzNE9Hhb7iGTkX42GvBfAyFgSlhMxkGOwrn7P2cYR9uPIKowgHYDLgZdofP8VxHk/v/FK8TsSuBNb3LinaVdbRobVu6f+IuRNE0xaMl0arvp8ZIp2boMo9re5rGa6VQZ+EGe9SqLKJWQBRTuRy1oVLOtZcSlyCPfha8Qx2ORREIYRxqWONjK4WFeh4MO4fPVVmLOoypglFzK8YpVd4UFpAgRaJHIPXyI8Y3BmWOj3vtLeRGCd+L6cEbwyAVXIH8/u7wWFRCpWywdT+/s+nsBTnZFg0X1/XeaBk9NG0EzfixDyUq/JZsFJ2FGveeV/qKawBUmeYhGMXe+/WKr7WSWolxd/KIjndn8WZLeLecN9SFY3EX4u/tQ5yvfIpQef0HBY8qH42CqENbbGbKDad4cTchQqVDAnlKQkdFMWejc9jbydu7FTH6YQA2qZVYRA8uQGX+s0KUkIs4WzyV8WZatG4jumfySKLq0hGd1+QrhUhTI2YAeKEzle89hWvyItQVeME1R63CuPNMdgfdHEhrJkhR04tCGwhXS5smIhjlzwKOVR0v7LA5/1qUPp4APIwoRBRRE10OEpTRHGnbYjFJWODETXkQqhAR2BjG9mDFBTIoPwiRpLJRngtKj41W0NPTh9Gc+V2psrbQMhBG+EIhBXmeYpRwmkbtBLeDerFaMZU0gVqZ5875F2vc1VgFAx0EZ5rQcJ/Tmrxyp06PMfeTm/IY+5Whl7UUspIED1ynOpcED2SczyIu05+F2zZN5Z2rEO7fFvf+rgp9ziZx3ktnWEdZUxVrpvlr2tGdE3alSCxNxaup800D1gO3fP09KC5WfS2VNNcy4R724g2PVskvPHL3Lcq4O55Ak48qwtbKBANiNBzWd7xsUezDBNzOxiSR+wrK+JyNQ7lGWboKnSEq9EXumVCNWwo0+Og3dtO/f0D4Po/ykTsPSmOOsmCLhwfKcOX8g9N2pB/md6fKmvpS0J3X5Wykha6G7oLjFL6JVk0/joOMpzQ7XW7N6cD4BO1/R6CtLUx9jZIy7lFhAVDVH27tOAVxQeCwvFMyy21yJuEiSaf1LUjblsM3whQlP3nrYjNOCMU5+XMVTkSB2WwfhZNh0CTcrzrl1vUuG54jhI6P0OabS3CsWknNRg2b9pXraO7qDnTLhNGUSqQzqnVlyGcQOtofnR+sHDrGx3c5WWGGCW8idDkDx7Q1hLR+A90ElSLRFkFUUNmpLMcWkyJhQpmIW4Hm4++mh5s4YX5HACQo62DgKEcetZx4UGgP5PZPlXY+J3/3aBGkX/PBHq4fNy83h34tCjn52jitiBuXcqvfMKZa17/dYnpu+hD67seeVFlZ9vZmDqJ7fu8RRzApH3dC0dAP4zXb7VoU8Zwq6rKZulRkTCz0q3HuexueLJYQNgsm+zlZOY1wrH7EL4rNf9ELm0AeXaa6RlBTc+pRCjEdcWv042+BHHg9wta12JC0gzFsF9CIcqHln/D3FQhXmqYfNpj8eXbB53Dc05Fo44uFMLCobIjHsqp1D03bkS7ZuKiqdaXAl1BJZcVCZ6fD92mdMATK4sO4O94jQeLR4o2s31Ln3Du5RpMzgUXPzim+MoFjzDeBwSm34su5WCiOh2Idq5zJXKazBA38sPQfRmGj4Qxa8SLpc368Eyo9EHr7Dl1Q0MTh1KAMxDnbBm2HXrAlK7tks3HVuskj6fgh71O/zouKrVpXbNzmCFgCGJjvhEWDlbgs5a9w5KwQJhfPqGAoynUFuhfGvQsU6xxRmFw2ExTp7grJqJ+fU9w3D+0+q/HnUmz+osJEtWb8uZmPNFJnQZ3wRKThboOAzN8DqN5tio2S2NdcD9nRxah1+E6YAV6JPOtc6AZwq2GrhFXrvl7aLaNad8mYJzMa9MnyK66zlLBxn4gbrS9UqloTfsPrm+foXvt976YQNgsRQf61awjnio1QWTboQlN7Kjzl0yXG/WScx4WSISR+OQtT1kRp2dtwH67W6G7RLbB8AQb2WkE7/mB47X+DMebxsjrsjqmBTiHuOORIx+dEBN0oW5k2c6p1K+jBqSPo11t9RAO7zqNkg7MHsliCEUW+w1EK2rqVee9+c92yEZ2qtBUKGE0a92ahpZGn0JnCyfUuLbJKm8nCOg4h5/tuHbEbzkebrHY6VDDsX6Kv/GjBY/ei2mc0ZjRa3q7HICCHY4Xi0Mc0N4ODUYjXBimaY7FReFLRsJPPFEOLojreRAvXtaV7p4wiqmpVTQOWAhj3ddjVOwV1vJsvZcT2maB3g98qdd2ZxvnoIqgDmtQXSAqV7d1dxmL6uU5YwYwKpF4WJk8Im5N8E8/2w6YobViRrj28Wqc4cYyB6I8O/8kzoY/D5sfg7300CwdvwWdKQ2WRQ+wWTfjk9WTVum+G0ZwF3cpVtc5SgkSFcJrjOXCLTCknfpx8bzyg4UoEaOsy0eu9tXD+TWsdTxY0w03IlG4iCO1wz3s5872Qez4yT4eII8LxP0MaAQ6HCJGiS3y2U1aiAl2XmYIccb5UBfcrE+oMOH+ucv1zFbwTCeGBM34Qpa9bLRnVutXt6K4Ju5Srap2lBIkK8n73C1WvfjS4C8VSYWEI0pffG21HflCpbPbCUQarR77VJDy6l7D54fnZJo414WPYQ6nygLBp4ZY3hy0wcY1CaBFzrpl1khnXXvQVJjjqMF9BJOQV4e+OwqGXSBIhDE8+Nyqm9PHLXrWuffVaemDajjR7Xtmq1llKjGiOkEC9MIrUZL7WJE4IOxLQuO8bwPMfFFBVLgpVMELxERepmeRtIXyuM4fdjaOEcLIoRVuuvC7omrOUpjhJL4pzZ1rYpY9wDh21Pz/XbFhppGOETcCjHpsI0Sj71eneRbMFVLR2LS453b6qjuaubk+3Tty9nFXrLCVq3OcjXEhomwlD3MIEYgh7hwCvozKSUHbeTgjw+4cJk7C4kMk0awXxhwMgiuKXwULLFnu8LSUp6GjFjxYKyZxNDOePTa+uTpV7AoVxfvgVhRsRO06Iisly6M0Gikt1P4to3FucW5tMRalf+yX0LKvWzW0RqnWWIpMr//gPaAY7XkKxR1zmY6aQ981XEKXC0Qba/k7zGTmoEDZRs0MsRLoNIeCYMNPcD9dhMeUF/V/UcngUrVhRiLsMhVEzXUiXK3zUGbUQuhynKJsbNKLhfMesA3COy/NEOVA/qa1tNTX+RYVEJ3XY4khEU7RwbVt6aOqORDVE6VSL28NYiqztPFbwjn+Dil7u6y4VxDGBwyQLkCz3yUVAn2Izo8tK/H4NDISfam2nOI0lUMPaos8SJFaH+5xqdjMR7Y2//7kFVMqLzBbyxecLG6AXDRfSOYwXPPdfav7uTqiJ+dLQlD8Zf0KRnbOxy6c2x8I0TtmXbn1ORxQrNmiqkk0SUnLOwJuWqVo3ZSTNmtudqjdaZ3PvFqPGfQlUo3juLWGyDo8nvdxnAUwPeNg8mccUtwg3+nXIlar2Gb8Db/ZIYVKYTn1qEhuKJ1B89YRi7nBzLGaOItedirOMg3CX0N50IlIAXJSl8p09KMxFflJjRnM54RSRDhAK3vj7DIOXhRbFPyoUrTmMwYxq5nAhshYmnH9fJZyj3DTCtzDQjjPAgkAqDEZ0oAc+i45u+LKc91Q9f2WnWsfe+/0TdyaKpiluc+8Ww1OZvoe3x56b0w9+ATz6l/H3A3Gz5j7GIJ99HcQ5vkLo2fEATfBDTqHYf1DtezzadLoh/Omo7p0HT/0peNzH4TNW+Zgn3YgN0DE4H0dg8tC/ISs6EOH6zpDm5A3A7dgsORoCd2hsSIJyjKAnzh7jFCK6CSIuA4Rj7Y8ip+uh4ub0Pz/cgj2l14hohvD/Pwao/vZijfCd18IDvxLFmZE8nRxjcL2+AuP6S9xLhSgm+1GILmzsMnNbjDrdgnqMoXk2Ap3RbXEb7hd+zqWIkDRpbq6vwJ8x/P65uG474zoegHoWXpvKVrWuV5sVmYEy3/7YmxKV5awXZSkmsmrxJkhlsnf5B+TgNsKuWWwfUjXGbOjdYIProKq/OA662Dcg7zdGGICxAsefmxOfAK/JOZYmYQGLKFYcJ/D3BoQsb8dC+Ac8xHa9TjmvsQA63uLwjkJwOjYXF6Jq+0w8HI8omedc8bFe7DNf7+gH8KJbCJz38dPhca8wcvJuH2mSjsJnjihcs6ciHdQe/eV/RWSsUVBsGym81rfoUXe8d66jUD23znfak/R5Bfn3c2Awb8X13Sgc196IDg1CeP5YbB6X4T5phDF3xKLqkN7h13I2PKShN/ElNp33YYN0DR6LsZZ1wPPegixuLp00vquiqtbNWtmJ7pkyiq7s+3grmkBuMUmsa3+nrdeV7xA+expG2iGRRwCkAYZ1NozJ4xhIcbFHHrMNjM5MhK7ZsKjwHcKGS/AacWxAqoQq3jno+74Yi9OsnM+wCYZxvODhFdXAE38N0QumHp7eeLxvAot9jbBhWQKP5XYIpDj5zELzObyreTnnqlo4V3MR4bgJIXnZhkzGAOiyvwHDFTaOsMs7PnLSM9HWOBOeoe60u2743j/GtZtS+B5egMGrwfXSGxvMvnik8LybUfci3jsVeM/X8V3J6IVCyPeFkLYOb+I1lsBwjhMMMmE9eBCb3VocVzfcU33wZxUiQY8iPcfHTYLHvgU07VV7/6fguLpCwrkN3rsaXSJTsGFzUm6510kU9/vzpdxSV1vRRF8t7U679fyWenZcQskmneCihSz0/+GEYmThQa2GAAAAAElFTkSuQmCC"
+                alt="Rotary Club of Makati">
+
+            <h2>
+                ${title}
+            </h2>
+
+        </div>
+
+    `;
+
+}
+
+
+// ============================================================
+// PRINT CSS
+// ============================================================
+
+function printStyles() {
+
+    return `
+
+        <style>
+
+            @page {
+                size: A4;
+                margin: 12mm;
+            }
+
+            body {
+                font-family: Arial, sans-serif;
+                color: #222;
+                font-size: 12px;
+            }
+
+            .print-header {
+                text-align: center;
+                border-bottom: 2px solid #1f4e91;
+                padding-bottom: 12px;
+                margin-bottom: 18px;
+            }
+
+            .print-header img {
+                width: 180px;
+                max-width: 55%;
+                height: auto;
+                display: block;
+                margin: 0 auto 8px;
+            }
+
+            .address {
+                font-size: 12px;
+                line-height: 1.4;
+                margin-bottom: 8px;
+            }
+
+            .print-header h2 {
+                color: #1f4e91;
+                margin: 8px 0 0;
+            }
+
+            .event-info {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+                margin-bottom: 15px;
+            }
+
+            .info-box {
+                border: 1px solid #ccc;
+                padding: 8px;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 12px;
+            }
+
+            th {
+                background: #1f4e91;
+                color: white;
+                padding: 7px;
+                border: 1px solid #999;
+                text-align: left;
+            }
+
+            td {
+                padding: 7px;
+                border: 1px solid #bbb;
+                vertical-align: top;
+            }
+
+            .summary {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 15px;
+            }
+
+            .summary-box {
+                border: 1px solid #ccc;
+                padding: 10px;
+                flex: 1;
+            }
+
+            .summary-box strong {
+                display: block;
+                color: #1f4e91;
+                font-size: 20px;
+                margin-top: 4px;
+            }
+
+            .signature-area {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 60px;
+                margin-top: 60px;
+            }
+
+            .signature {
+                border-top: 1px solid #222;
+                padding-top: 7px;
+                text-align: center;
+            }
+
+            .three-signatures {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 40px;
+                margin-top: 60px;
+            }
+
+            .event-detail {
+                padding: 5px;
+                margin-bottom: 3px;
+                background: #f5f7fa;
+            }
+
+            .small {
+                font-size: 10px;
+                color: #666;
+            }
+
+            @media print {
+                .no-print {
+                    display: none;
+                }
+            }
+
+        </style>
+
+    `;
+
+}
+
+
+// ============================================================
+// PRINT RECEIVING FORM
+// ============================================================
+
+function printReceiving(id) {
+
+    const event =
+        events.find(
+            item => Number(item.id) === Number(id)
+        );
+
+
+    if (!event) return;
+
+
+    let rows = "";
+
+
+    event.items.forEach(item => {
+
+        rows += `
+
+            <tr>
+
+                <td>
+                    ${escapeHTML(item.wineName)}
+                </td>
+
+                <td>
+                    ${escapeHTML(item.wineType)}
+                </td>
+
+                <td>
+                    <strong>
+                        ${item.prepared}
+                    </strong>
+                </td>
+
+                <td>
+                    ${item.prepared}
+                </td>
+
+                <td>
+                    ${escapeHTML(item.note || "")}
+                </td>
+
+            </tr>
+
+        `;
+
+    });
+
+
+    const w =
+        window.open(
+            "",
+            "_blank",
+            "width=1000,height=800"
+        );
+
+
+    w.document.write(`
+
+        <!DOCTYPE html>
+
+        <html>
+
+        <head>
+
+            <title>
+                Wine Receiving Form - ${escapeHTML(event.eventName)}
+            </title>
+
+            ${printStyles()}
+
+        </head>
+
+        <body>
+
+            ${printHeader("WINE EVENT RECEIVING FORM")}
+
+
+            <div class="event-info">
+
+                <div class="info-box">
+                    <strong>Event:</strong>
+                    ${escapeHTML(event.eventName)}
+                </div>
+
+                <div class="info-box">
+                    <strong>Event Date:</strong>
+                    ${event.eventDate}
+                </div>
+
+                <div class="info-box">
+                    <strong>Prepared By:</strong>
+                    ${escapeHTML(event.preparedBy)}
+                </div>
+
+                <div class="info-box">
+                    <strong>Received By:</strong>
+                    ${escapeHTML(event.receivedBy || "")}
+                </div>
+
+            </div>
+
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Wine</th>
+                        <th>Type</th>
+                        <th>Qty Prepared</th>
+                        <th>Qty Issued</th>
+                        <th>Qty Actually Received</th>
+                        <th>Notes</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    ${rows}
+
+                </tbody>
+
+            </table>
+
+
+            <p>
+                <strong>Receiving Confirmation:</strong>
+            </p>
+
+            <p>
+                I confirm that I have received the wine quantities
+                listed above for this event.
+            </p>
+
+
+            <div class="signature-area">
+
+                <div class="signature">
+
+                    Prepared By<br>
+                    <strong>
+                        ${escapeHTML(event.preparedBy)}
+                    </strong>
+
+                </div>
+
+
+
+            </div>
+
+
+            <div class="signature-area">
+
+                <div class="signature">
+                    Signature / Date
+                </div>
+
+                <div class="signature">
+                    Signature / Date
+                </div>
+
+            </div>
+
+
+            <p style="margin-top:40px">
+
+                <strong>After Event:</strong>
+                Please return this form to the inventory
+                custodian after recording actual wine usage.
+
+            </p>
+
+
+            <script>
+
+                window.onload = function() {
+                    window.print();
+                };
+
+            <\/script>
+
+        
+
+</body>
+
+        </html>
+
+    `);
+
+
+    w.document.close();
+
+}
+
+
+// ============================================================
+// FINAL EVENT REPORT
+// ============================================================
+
+function printFinalEventReport(id) {
+
+    const event =
+        events.find(
+            item => Number(item.id) === Number(id)
+        );
+
+
+    if (!event) return;
+
+
+    let rows = "";
+
+    let totalPrepared = 0;
+    let totalReceived = 0;
+    let totalUsed = 0;
+    let totalReturned = 0;
+
+
+    event.items.forEach(item => {
+
+        totalPrepared +=
+            Number(item.prepared);
+
+        totalReceived +=
+            Number(item.received);
+
+        totalUsed +=
+            Number(item.used);
+
+        totalReturned +=
+            Number(item.returned);
+
+
+        rows += `
+
+            <tr>
+
+                <td>
+                    <strong>
+                        ${escapeHTML(item.wineName)}
+                    </strong>
+                </td>
+
+                <td>
+                    ${escapeHTML(item.wineType)}
+                </td>
+
+                <td>
+                    ${item.prepared}
+                </td>
+
+                <td>
+                    ${item.received}
+                </td>
+
+                <td>
+                    ${item.used}
+                </td>
+
+                <td>
+                    ${item.returned}
+                </td>
+
+                <td>
+                    ${escapeHTML(item.note || "")}
+                </td>
+
+            </tr>
+
+        `;
+
+    });
+
+
+    const w =
+        window.open(
+            "",
+            "_blank",
+            "width=1100,height=850"
+        );
+
+
+    w.document.write(`
+
+        <!DOCTYPE html>
+
+        <html>
+
+        <head>
+
+            <title>
+                Final Event Wine Report
+            </title>
+
+            ${printStyles()}
+
+        </head>
+
+        <body>
+
+            ${printHeader("FINAL EVENT WINE CONSUMPTION REPORT")}
+
+
+            <div class="event-info">
+
+                <div class="info-box">
+                    <strong>Event:</strong>
+                    ${escapeHTML(event.eventName)}
+                </div>
+
+                <div class="info-box">
+                    <strong>Date:</strong>
+                    ${event.eventDate}
+                </div>
+
+                <div class="info-box">
+                    <strong>Prepared By:</strong>
+                    ${escapeHTML(event.preparedBy)}
+                </div>
+
+                <div class="info-box">
+                    <strong>Received By:</strong>
+                    ${escapeHTML(event.receivedBy || "-")}
+                </div>
+
+            </div>
+
+
+            <div class="summary">
+
+                <div class="summary-box">
+                    Prepared
+                    <strong>${totalPrepared}</strong>
+                </div>
+
+                <div class="summary-box">
+                    Received
+                    <strong>${totalReceived}</strong>
+                </div>
+
+                <div class="summary-box">
+                    Used
+                    <strong>${totalUsed}</strong>
+                </div>
+
+                <div class="summary-box">
+                    Returned
+                    <strong>${totalReturned}</strong>
+                </div>
+
+            </div>
+
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Wine</th>
+                        <th>Type</th>
+                        <th>Prepared</th>
+                        <th>Received</th>
+                        <th>Used</th>
+                        <th>Returned</th>
+                        <th>Notes</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    ${rows}
+
+                </tbody>
+
+            </table>
+
+
+            <p style="margin-top:20px">
+
+                <strong>Event Description:</strong><br>
+
+                ${escapeHTML(event.description || "-")}
+
+            </p>
+
+
+            <div class="three-signatures">
+
+                <div class="signature">
+                    Prepared By<br><br>
+                    ${escapeHTML(event.preparedBy)}
+                </div>
+
+                <div class="signature">
+                    Received / Waiter<br><br>
+                    ${escapeHTML(event.receivedBy || "")}
+                </div>
+
+                <div class="signature">
+                    Checked By<br><br>
+                    __________________
+                </div>
+
+            </div>
+
+
+            <p style="margin-top:40px">
+                Report Generated:
+                ${new Date().toLocaleString()}
+            </p>
+
+
+            <script>
+
+                window.onload = function() {
+                    window.print();
+                };
+
+            <\/script>
+
+        </body>
+
+        </html>
+
+    `);
+
+
+    w.document.close();
+
+}
+
+
+// ============================================================
+// PRINT SPECIFIC EVENT WINE USAGE REPORT
+// ============================================================
+
+function printEventUsageReport(id) {
+
+    const event =
+        events.find(
+            item => Number(item.id) === Number(id)
+        );
+
+    if (!event) return;
+
+    let rows = "";
+    let totalPrepared = 0;
+    let totalReceived = 0;
+    let totalUsed = 0;
+    let totalReturned = 0;
+
+    event.items.forEach(item => {
+
+        const prepared = Number(item.prepared || 0);
+        const received = Number(item.received || prepared);
+        const used = Number(item.used || 0);
+        const returned = Number(item.returned || (received - used));
+
+        totalPrepared += prepared;
+        totalReceived += received;
+        totalUsed += used;
+        totalReturned += returned;
+
+        rows += `
+            <tr>
+                <td><strong>${escapeHTML(item.wineName)}</strong></td>
+                <td>${escapeHTML(item.wineType || "-")}</td>
+                <td>${prepared}</td>
+                <td>${received}</td>
+                <td><strong>${used}</strong></td>
+                <td>${returned}</td>
+                <td>${escapeHTML(item.note || "")}</td>
+            </tr>
+        `;
+    });
+
+    const statusText = event.status === "finalized"
+        ? "FINALIZED"
+        : "OPEN / EVENT PENDING";
+
+    const w =
+        window.open(
+            "",
+            "_blank",
+            "width=1200,height=850"
+        );
+
+    if (!w) {
+        alert("Please allow pop-ups to print the event wine usage report.");
+        return;
+    }
+
+    w.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Wine Usage Report - ${escapeHTML(event.eventName)}</title>
+            ${printStyles()}
+        </head>
+        <body>
+            ${printHeader("SPECIFIC EVENT WINE USAGE REPORT")}
+
+            <div class="event-info">
+                <div class="info-box">
+                    <strong>Event:</strong>
+                    ${escapeHTML(event.eventName)}
+                </div>
+                <div class="info-box">
+                    <strong>Event Date:</strong>
+                    ${event.eventDate}
+                </div>
+                <div class="info-box">
+                    <strong>Prepared By:</strong>
+                    ${escapeHTML(event.preparedBy || "-")}
+                </div>
+                <div class="info-box">
+                    <strong>Status:</strong>
+                    ${statusText}
+                </div>
+            </div>
+
+            <div class="summary">
+                <div class="summary-box">
+                    Prepared
+                    <strong>${totalPrepared}</strong>
+                </div>
+                <div class="summary-box">
+                    Received
+                    <strong>${totalReceived}</strong>
+                </div>
+                <div class="summary-box">
+                    Used
+                    <strong>${totalUsed}</strong>
+                </div>
+                <div class="summary-box">
+                    Returned
+                    <strong>${totalReturned}</strong>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Wine</th>
+                        <th>Type</th>
+                        <th>Prepared</th>
+                        <th>Received</th>
+                        <th>Used</th>
+                        <th>Returned</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${rows}
+                </tbody>
+            </table>
+
+            <p style="margin-top:20px">
+                <strong>Event Description:</strong><br>
+                ${escapeHTML(event.description || "-")}
+            </p>
+
+            <div class="three-signatures">
+                <div class="signature">
+                    Prepared By<br><br>
+                    ${escapeHTML(event.preparedBy || "")}
+                </div>
+                <div class="signature">
+                    Received / Waiter<br><br>
+                    ${escapeHTML(event.receivedBy || "")}
+                </div>
+                <div class="signature">
+                    Checked By<br><br>
+                    __________________
+                </div>
+            </div>
+
+            <p style="margin-top:35px">
+                Report Generated:
+                ${new Date().toLocaleString()}
+            </p>
+
+            <script>
+                window.onload = function() {
+                    window.print();
+                };
+            <\/script>
+        </body>
+        </html>
+    `);
+
+    w.document.close();
+}
+
+
+// ============================================================
+// PRINT ALL EVENT REPORT
+// ============================================================
+
+function printAllEventsReport() {
+
+    let rows = "";
+
+    let totalUsed = 0;
+    let totalReturned = 0;
+
+
+    events
+        .filter(event => event.status === "finalized")
+        .forEach(event => {
+
+            event.items.forEach(item => {
+
+                totalUsed +=
+                    Number(item.used);
+
+                totalReturned +=
+                    Number(item.returned);
+
+
+                rows += `
+
+                    <tr>
+
+                        <td>
+                            ${escapeHTML(event.eventName)}
+                        </td>
+
+                        <td>
+                            ${event.eventDate}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(item.wineName)}
+                        </td>
+
+                        <td>
+                            ${item.prepared}
+                        </td>
+
+                        <td>
+                            ${item.used}
+                        </td>
+
+                        <td>
+                            ${item.returned}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(event.preparedBy)}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(event.receivedBy || "-")}
+                        </td>
+
+                    </tr>
+
+                `;
+
+            });
+
+        });
+
+
+    const w =
+        window.open(
+            "",
+            "_blank",
+            "width=1200,height=850"
+        );
+
+
+    w.document.write(`
+
+        <!DOCTYPE html>
+
+        <html>
+
+        <head>
+
+            <title>
+                Rotary Club of Makati - Event Wine Usage
+            </title>
+
+            ${printStyles()}
+
+        </head>
+
+        <body>
+
+            ${printHeader("WINE EVENT USAGE REPORT")}
+
+
+            <div class="summary">
+
+                <div class="summary-box">
+                    Events
+                    <strong>
+                        ${
+                            events.filter(
+                                event =>
+                                    event.status === "finalized"
+                            ).length
+                        }
+                    </strong>
+                </div>
+
+                <div class="summary-box">
+                    Bottles Used
+                    <strong>${totalUsed}</strong>
+                </div>
+
+                <div class="summary-box">
+                    Bottles Returned
+                    <strong>${totalReturned}</strong>
+                </div>
+
+            </div>
+
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Event</th>
+                        <th>Date</th>
+                        <th>Wine</th>
+                        <th>Prepared</th>
+                        <th>Used</th>
+                        <th>Returned</th>
+                        <th>Prepared By</th>
+                        <th>Received By</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    ${rows}
+
+                </tbody>
+
+            </table>
+
+
+            <div class="three-signatures">
+
+                <div class="signature">
+                    Prepared By
+                </div>
+
+                <div class="signature">
+                    Checked By
+                </div>
+
+                <div class="signature">
+                    Approved By
+                </div>
+
+            </div>
+
+
+            <script>
+
+                window.onload = function() {
+                    window.print();
+                };
+
+            <\/script>
+
+        </body>
+
+        </html>
+
+    `);
+
+
+    w.document.close();
+
+}
+
+
+// ============================================================
+// PRINT INVENTORY REPORT
+// ============================================================
+
+function printInventoryReport() {
+
+    let rows = "";
+
+    let totalReceived = 0;
+    let totalUsed = 0;
+    let totalAvailable = 0;
+
+
+    inventory.forEach(wine => {
+
+        const available =
+            availableInStore(wine);
+
+
+        totalReceived +=
+            Number(wine.totalReceived);
+
+        totalUsed +=
+            Number(wine.totalUsed);
+
+        totalAvailable +=
+            available;
+
+
+        const wineEvents =
+            events.filter(
+                event =>
+                    event.items.some(
+                        item =>
+                            Number(item.wineId) ===
+                            Number(wine.id)
+                    )
+            );
+
+
+        let eventDetails = "";
+
+
+        if (!wineEvents.length) {
+
+            eventDetails =
+                "No event usage recorded";
+
+        } else {
+
+            wineEvents.forEach(event => {
+
+                const item =
+                    event.items.find(
+                        item =>
+                            Number(item.wineId) ===
+                            Number(wine.id)
+                    );
+
+
+                if (!item) return;
+
+
+                eventDetails += `
+
+                    <div class="event-detail">
+
+                        <strong>
+                            ${escapeHTML(event.eventName)}
+                        </strong>
+
+                        — ${event.eventDate}
+
+                        <br>
+
+                        Prepared:
+                        ${item.prepared}
+
+                        &nbsp; | &nbsp;
+
+                        Used:
+                        ${item.used}
+
+                        &nbsp; | &nbsp;
+
+                        Returned:
+                        ${item.returned}
+
+                    </div>
+
+                `;
+
+            });
+
+        }
+
+
+        rows += `
+
+            <tr>
+
+                <td>
+                    <strong>
+                        ${escapeHTML(wine.name)}
+                    </strong>
+                </td>
+
+                <td>
+                    ${escapeHTML(wine.type)}
+                </td>
+
+                <td>
+                    ${wine.totalReceived}
+                </td>
+
+                <td>
+                    ${wine.totalUsed}
+                </td>
+
+                <td>
+                    <strong>
+                        ${available}
+                    </strong>
+                </td>
+
+                <td>
+                    ${wine.lastStockDate || "-"}
+                </td>
+
+                <td>
+                    ${eventDetails}
+                </td>
+
+            </tr>
+
+        `;
+
+    });
+
+
+    const w =
+        window.open(
+            "",
+            "_blank",
+            "width=1400,height=900"
+        );
+
+
+    w.document.write(`
+
+        <!DOCTYPE html>
+
+        <html>
+
+        <head>
+
+            <title>
+                Wine Inventory Report
+            </title>
+
+            ${printStyles()}
+
+        </head>
+
+        <body>
+
+            ${printHeader("WINE INVENTORY REPORT")}
+
+            <div style="text-align:right; margin:10px 0 14px; font-size:13px; color:#555;">
+                <strong>As of:</strong>
+                ${new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+            </div>
+
+            <div class="summary">
+
+                <div class="summary-box">
+                    Stock
+                    <strong>${totalReceived}</strong>
+                </div>
+
+                <div class="summary-box">
+                    Total Used
+                    <strong>${totalUsed}</strong>
+                </div>
+
+                <div class="summary-box">
+                    Available
+                    <strong>${totalAvailable}</strong>
+                </div>
+
+            </div>
+
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Wine</th>
+                        <th>Type</th>
+                        <th>Stock</th>
+                        <th>Total Used</th>
+                        <th>Available</th>
+                        <th>Last Restock</th>
+                        <th>Events Used</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    ${rows}
+
+                </tbody>
+
+            </table>
+
+
+            <div class="three-signatures">
+
+                <div class="signature">
+                    Prepared By
+                </div>
+
+                <div class="signature">
+                    Checked By
+                </div>
+
+                <div class="signature">
+                    Approved By
+                </div>
+
+            </div>
+
+
+            <p style="margin-top:35px">
+
+                Report Generated:
+                ${new Date().toLocaleString()}
+
+            </p>
+
+
+            <script>
+
+                window.onload = function() {
+                    window.print();
+                };
+
+            <\/script>
+
+        </body>
+
+        </html>
+
+    `);
+
+
+    w.document.close();
+
+}
+
+
+// ============================================================
+// CSV EXPORT
+// ============================================================
+
+function csvSafe(value) {
+
+    const text =
+        String(value ?? "");
+
+    if (
+        text.includes(",") ||
+        text.includes('"') ||
+        text.includes("\n")
+    ) {
+
+        return '"' +
+            text.replace(/"/g, '""') +
+            '"';
+
+    }
+
+    return text;
+
+}
+
+
+function exportCSV() {
+
+    let csv =
+        "WINE INVENTORY\n\n";
+
+
+    csv +=
+        "WINE INVENTORY\n";
+
+    csv +=
+        "Wine,Type,Stock,Total Used,Available Wine,Last Stock Date,Stock By / Inventory By,Donated By / Brought By,Supplier,Batch,Unit Price,Minimum Stock\n";
+
+
+    inventory.forEach(wine => {
+
+        csv += [
+
+            csvSafe(wine.name),
+
+            csvSafe(wine.type),
+
+            wine.totalReceived,
+
+            wine.totalUsed,
+
+            availableInStore(wine),
+
+            csvSafe(wine.lastStockDate),
+
+            csvSafe(wine.stockBy),
+
+            csvSafe(wine.donatedBy),
+
+            csvSafe(wine.supplier),
+
+            csvSafe(wine.batch),
+
+            wine.price || 0,
+
+            wine.minimumStock || 0
+
+        ].join(",") + "\n";
+
+    });
+
+
+    csv +=
+        "\nEVENT USAGE\n";
+
+    csv +=
+        "Event,Date,Wine,Prepared,Received,Used,Returned,Prepared By,Received By,Description\n";
+
+
+    events.forEach(event => {
+
+        event.items.forEach(item => {
+
+            csv += [
+
+                csvSafe(event.eventName),
+
+                event.eventDate,
+
+                csvSafe(item.wineName),
+
+                item.prepared,
+
+                item.received,
+
+                item.used,
+
+                item.returned,
+
+                csvSafe(event.preparedBy),
+
+                csvSafe(event.receivedBy),
+
+                csvSafe(event.description)
+
+            ].join(",") + "\n";
+
+        });
+
+    });
+
+
+    const blob =
+        new Blob(
+            [csv],
+            {
+                type: "text/csv;charset=utf-8;"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(blob);
+
+
+    const link =
+        document.createElement("a");
+
+
+    link.href = url;
+
+    link.download =
+        `RCM-Wine-Inventory-${today()}.csv`;
+
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+
+}
+
+
+// ============================================================
+// BACKUP
+// ============================================================
+
+function backupData() {
+
+    const backup = {
+
+        organization:
+            "Rotary Club of Makati",
+
+        address:
+            "8001 MRCFI BLDG. Camia St. Guadalupe Viejo, Makati City",
+
+        exportedAt:
+            new Date().toISOString(),
+
+        inventory,
+
+        events
+
+    };
+
+
+    const blob =
+        new Blob(
+            [
+                JSON.stringify(
+                    backup,
+                    null,
+                    2
+                )
+            ],
+            {
+                type: "application/json"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(blob);
+
+
+    const link =
+        document.createElement("a");
+
+
+    link.href = url;
+
+    link.download =
+        `RCM-Wine-Backup-${today()}.json`;
+
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+
+}
+
+
+
+// ============================================================
+// GOOGLE SHEETS / DRIVE SYNC
+// ============================================================
+
+// Google Apps Script Web App URL is permanently embedded in this HTML.
+// No Google URL or inventory data is stored in the browser.
+const DEFAULT_GOOGLE_SYNC_URL = "https://script.google.com/macros/s/AKfycbxgCUJRn7E_ni_ZCSZo0VyIn9RuXp6v_MJabP_UsXeoDTBRyaszU94WKyPQPD_bLuTU/exec";
+
+function googleSyncUrl() {
+    // Permanently embedded in this HTML file; no browser setup is required.
+    return DEFAULT_GOOGLE_SYNC_URL;
+}
+
+function updateGoogleSyncStatus(text, ok = false) {
+    const el = document.getElementById("googleSyncStatus");
+    if (!el) return;
+    el.textContent = text;
+    el.className = "badge " + (ok ? "badge-open" : "badge-open");
+}
+
+function googleSyncSetup() {
+    // Google Apps Script URL is permanently embedded in this file.
+    // No browser/local configuration is used.
+    return googleSyncUrl();
+}
+
+function encodeSyncPayload(payload) {
+    // UTF-8 safe Base64 encoding. The actual inventory is never
+    // copied into a textarea or CSV field.
+    const json = JSON.stringify(payload);
+    const bytes = new TextEncoder().encode(json);
+    let binary = "";
+    const chunk = 0x8000;
+
+    for (let i = 0; i < bytes.length; i += chunk) {
+        binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
+    }
+
+    return btoa(binary);
+}
+
+function decodeSyncPayload(encoded) {
+    const binary = atob(encoded);
+    const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+    return JSON.parse(new TextDecoder().decode(bytes));
+}
+
+function googleSyncSave(silent = false) {
+    const url = googleSyncUrl();
+
+    if (!url) {
+        googleSyncSetup();
+        return;
+    }
+
+    if (!silent) updateGoogleSyncStatus("SYNCING...");
+
+    try {
+        const payload = {
+            action: "saveEncoded",
+            encoded: encodeSyncPayload({
+                inventory,
+                events,
+                exportedAt: new Date().toISOString()
+            })
+        };
+
+        // Use a normal HTML form POST through a hidden iframe.
+        // This avoids browser CORS/fetch restrictions with Google Apps Script.
+        const iframeName = "googleSyncFrame_" + Date.now();
+        const iframe = document.createElement("iframe");
+        iframe.name = iframeName;
+        iframe.style.display = "none";
+        document.body.appendChild(iframe);
+
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = url;
+        form.target = iframeName;
+        form.style.display = "none";
+
+        const actionInput = document.createElement("input");
+        actionInput.type = "hidden";
+        actionInput.name = "action";
+        actionInput.value = payload.action;
+        form.appendChild(actionInput);
+
+        const encodedInput = document.createElement("input");
+        encodedInput.type = "hidden";
+        encodedInput.name = "encoded";
+        encodedInput.value = payload.encoded;
+        form.appendChild(encodedInput);
+
+        document.body.appendChild(form);
+        form.submit();
+
+        setTimeout(() => {
+            form.remove();
+            iframe.remove();
+        }, 5000);
+
+        if (!silent) {
+            updateGoogleSyncStatus("SENT", true);
+            alert("Inventory data sent to Google Sheets.");
+        }
+    } catch (error) {
+        updateGoogleSyncStatus("SYNC ERROR");
+        if (!silent) {
+            alert(
+                "Google sync failed.\n\n" +
+                error.message +
+                "\n\nCheck that the Apps Script is deployed as a Web App."
+            );
+        }
+    }
+}
+
+function googleSyncLoad(silent = false) {
+    const url = googleSyncUrl();
+
+    if (!url) {
+        googleSyncSetup();
+        return;
+    }
+
+    if (!silent) updateGoogleSyncStatus("LOADING...");
+
+    // JSONP avoids CORS restrictions when loading from a Netlify/static HTML page.
+    const callbackName = "googleSyncCallback_" + Date.now() + "_" + Math.floor(Math.random() * 100000);
+    const script = document.createElement("script");
+    let finished = false;
+
+    const cleanup = () => {
+        finished = true;
+        delete window[callbackName];
+        if (script.parentNode) script.parentNode.removeChild(script);
+    };
+
+    window[callbackName] = function(result) {
+        if (finished) return;
+        cleanup();
+
+        try {
+            if (!result || !result.ok) {
+                throw new Error((result && result.error) || "Google Sheet could not be loaded.");
+            }
+
+            const data = result.encoded
+                ? decodeSyncPayload(result.encoded)
+                : result;
+
+            if (!Array.isArray(data.inventory) || !Array.isArray(data.events)) {
+                throw new Error("Invalid data returned from Google Sheets.");
+            }
+
+            inventory = data.inventory;
+            events = data.events;
+            loadReceivingAttachmentsFromDrive(function() {
+                refresh();
+            });
+
+            if (!silent) {
+                updateGoogleSyncStatus("LOADED", true);
+                alert("Inventory successfully loaded from Google Sheets.");
+            }
+        } catch (error) {
+            updateGoogleSyncStatus("LOAD ERROR");
+            if (!silent) {
+                alert(
+                    "Google load failed.\n\n" +
+                    error.message +
+                    "\n\nCheck the Apps Script Web App deployment."
+                );
+            }
+        }
+    };
+
+    script.onerror = function() {
+        if (finished) return;
+        cleanup();
+        updateGoogleSyncStatus("LOAD ERROR");
+        if (!silent) {
+            alert(
+                "Google load failed.\n\n" +
+                "The Google Apps Script Web App could not be reached.\n\n" +
+                "Make sure the deployment is a Web app with access set to Anyone."
+            );
+        }
+    };
+
+    script.src = url + "?action=loadEncoded&callback=" + encodeURIComponent(callbackName) + "&_=" + Date.now();
+    document.head.appendChild(script);
+
+    setTimeout(() => {
+        if (!finished) {
+            cleanup();
+            updateGoogleSyncStatus("LOAD ERROR");
+            if (!silent) {
+                alert(
+                    "Google load failed.\n\n" +
+                    "The request timed out. Check the Apps Script Web App deployment."
+                );
+            }
+        }
+    }, 15000);
+}
+
+function updateGoogleConnectionStatus() {
+    updateGoogleSyncStatus(
+        googleSyncUrl() ? "CONNECTED" : "NOT CONNECTED",
+        Boolean(googleSyncUrl())
+    );
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+
+function updateDashboard() {
+
+    const received =
+        inventory.reduce(
+            (sum,wine) =>
+                sum + Number(wine.totalReceived),
+            0
+        );
+
+
+    const used =
+        inventory.reduce(
+            (sum,wine) =>
+                sum + Number(wine.totalUsed),
+            0
+        );
+
+
+    const available =
+        inventory.reduce(
+            (sum,wine) =>
+                sum + availableInStore(wine),
+            0
+        );
+
+
+    document.getElementById("dashReceived")
+        .textContent = received;
+
+    document.getElementById("dashUsed")
+        .textContent = used;
+
+    document.getElementById("dashAvailable")
+        .textContent = available;
+
+    const asOfDate = new Date().toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+    });
+
+    document.getElementById("dashAvailableAsOf")
+        .textContent = "As of " + asOfDate;
+
+    document.getElementById("dashEvents")
+        .textContent = events.length;
+
+}
+
+
+// ============================================================
+// REFRESH
+// ============================================================
+
+function refresh() {
+
+    updateDashboard();
+
+    renderInventory();
+
+    renderEvents();
+
+}
+
+
+// ============================================================
+// INITIAL SETUP
+// ============================================================
+
+document.getElementById("stockDate")
+    .value = today();
+
+
+// Preparation rows start empty; use + Add Wine to add one.
+
+
+// Load system
+
+updateGoogleConnectionStatus();
+updateAdminUI();
+refresh();
+
+if (guestUnlocked) {
+    document.body.classList.remove("admin-login-first");
+    document.body.classList.add("guest-mode");
+    document.documentElement.classList.remove("admin-login-required");
+    const guestOverlay = document.getElementById("adminPortalOverlay");
+    if (guestOverlay) {
+        guestOverlay.classList.remove("show", "login-required");
+        guestOverlay.setAttribute("aria-hidden", "true");
+    }
+} else if (!adminUnlocked) {
+    document.body.classList.add("admin-login-first");
+    document.documentElement.classList.add("admin-login-required");
+    const loginOverlay = document.getElementById("adminPortalOverlay");
+    if (loginOverlay) {
+        loginOverlay.classList.add("login-required");
+        loginOverlay.classList.add("show");
+        loginOverlay.setAttribute("aria-hidden", "false");
+    }
+}
+
+// Load the latest inventory from Google Sheets automatically on startup.
+if (googleSyncUrl()) {
+    googleSyncLoad(true);
+}
+
+</script>
+
+</body>
+</html>
