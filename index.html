@@ -426,6 +426,7 @@ body:not(.is-admin) .admin-only { display: none !important; }
     <nav class="tabs" role="tablist">
         <button class="tab active" id="tab-stock" type="button" onclick="showTab('stock')">🍷 Stock</button>
         <button class="tab" id="tab-events" type="button" onclick="showTab('events')">🎉 Events<span class="count" id="needCopyCount" style="display:none;"></span></button>
+        <button class="tab" id="tab-meetings" type="button" onclick="showTab('meetings')">🎤 Meetings</button>
         <button class="tab" id="tab-reports" type="button" onclick="showTab('reports')">📊 Reports</button>
     </nav>
 
@@ -493,6 +494,41 @@ body:not(.is-admin) .admin-only { display: none !important; }
         </div>
     </section>
 
+    <!-- ===== MEETINGS (speaker gifts & raffle prizes) ===== -->
+    <section class="panel" id="panel-meetings">
+        <div class="panel-card">
+            <div class="toolbar">
+                <div class="grow"><input type="search" id="giftSearch" placeholder="Search speaker, winner, wine or meeting…" oninput="renderGifts()"></div>
+                <select id="giftFilter" onchange="renderGifts()" aria-label="Filter records">
+                    <option value="all">All records</option>
+                    <option value="speaker">Guest speaker gifts</option>
+                    <option value="raffle">Raffle prizes</option>
+                </select>
+                <button class="btn btn-primary write" type="button" onclick="openGift('speaker')">🎤 Speaker gift</button>
+                <button class="btn btn-gold write" type="button" onclick="openGift('raffle')">🎟️ Raffle prize</button>
+            </div>
+            <div class="summary-line" id="giftSummary"></div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Given to</th>
+                            <th>Wine</th>
+                            <th class="num">Bottles</th>
+                            <th>Other token / gift</th>
+                            <th class="hide-sm">Meeting</th>
+                            <th class="hide-sm">Recorded by</th>
+                            <th class="write admin-only"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="giftTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
     <!-- ===== REPORTS ===== -->
     <section class="panel" id="panel-reports">
         <div class="panel-card">
@@ -501,6 +537,7 @@ body:not(.is-admin) .admin-only { display: none !important; }
                 <button class="report-tile" type="button" onclick="printInventoryReport()"><div class="ico">🖨️</div><b>Wine inventory report</b><span>Everything in stock, with usage per event</span></button>
                 <button class="report-tile" type="button" onclick="printAllEventsReport()"><div class="ico">🗓️</div><b>All events usage report</b><span>Every event and what was used</span></button>
                 <button class="report-tile" type="button" onclick="exportCSV()"><div class="ico">📥</div><b>Export to Excel / CSV</b><span>Download the data as a spreadsheet</span></button>
+                <button class="report-tile" type="button" onclick="printGiftsReport()"><div class="ico">🎤</div><b>Meetings gifts report</b><span>Speaker gifts and raffle prizes given</span></button>
                 <button class="report-tile write" type="button" onclick="backupData()"><div class="ico">💾</div><b>Download backup</b><span>Save a full copy of your data (JSON)</span></button>
             </div>
 
@@ -581,6 +618,63 @@ body:not(.is-admin) .admin-only { display: none !important; }
             <div class="modal-foot">
                 <button type="button" class="btn" onclick="closeModal('addWineModal')">Cancel</button>
                 <button type="submit" class="btn btn-primary" id="addWineSubmit">Save stock</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ============ MODAL: MEETING GIFT / RAFFLE PRIZE ============ -->
+<div class="modal" id="giftModal">
+    <div class="modal-card" role="dialog" aria-modal="true">
+        <div class="modal-head"><h2 id="giftTitle">Record gift</h2><button class="modal-x" type="button" onclick="closeModal('giftModal')" aria-label="Close">×</button></div>
+        <form id="giftForm">
+            <div class="modal-body">
+                <div class="form-grid">
+                    <div>
+                        <label for="giftKind">Type</label>
+                        <select id="giftKind" onchange="updateGiftLabels()">
+                            <option value="speaker">Guest speaker gift</option>
+                            <option value="raffle">Raffle prize</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="giftDate">Meeting date</label>
+                        <input type="date" id="giftDate" required>
+                    </div>
+                    <div class="full">
+                        <label for="giftRecipient" id="giftRecipientLabel">Speaker’s name</label>
+                        <input id="giftRecipient" required autocomplete="off" placeholder="Full name">
+                    </div>
+                    <div class="full">
+                        <label for="giftMeeting">Meeting / topic <span class="opt">(optional)</span></label>
+                        <input id="giftMeeting" placeholder="e.g. Weekly fellowship – topic of the talk">
+                    </div>
+                    <div>
+                        <label for="giftWine">Wine given <span class="opt">(optional)</span></label>
+                        <select id="giftWine"></select>
+                    </div>
+                    <div>
+                        <label for="giftQty">Bottles</label>
+                        <input type="number" id="giftQty" min="1" value="1" inputmode="numeric">
+                    </div>
+                    <div class="full">
+                        <label for="giftToken">Other token / gift <span class="opt">(optional)</span></label>
+                        <input id="giftToken" placeholder="e.g. Plaque, gift certificate, Rotary pin">
+                    </div>
+                    <div class="full">
+                        <label for="giftNote">Notes <span class="opt">(optional)</span></label>
+                        <textarea id="giftNote"></textarea>
+                    </div>
+                    <div class="hint-box">Wine given is taken out of your available stock and counted as used.</div>
+                    <div class="full">
+                        <label for="giftBy">Recorded by</label>
+                        <input id="giftBy" readonly placeholder="Filled in from your portal account">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button type="button" class="btn" onclick="closeModal('giftModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save record</button>
             </div>
         </form>
     </div>
@@ -696,6 +790,7 @@ body:not(.is-admin) .admin-only { display: none !important; }
 // ============================================================
 let inventory = [];
 let events = [];
+let gifts = [];                  // meeting gifts: guest-speaker gifts and raffle prizes
 let dataLoaded = false;          // true once data has been loaded from Google Sheets
 let attachmentsLoaded = false;   // true once the receiving-copy index has been loaded
 
@@ -914,7 +1009,7 @@ function guardLoaded() {
 }
 
 function showTab(name) {
-    ["stock", "events", "reports"].forEach(t => {
+    ["stock", "events", "meetings", "reports"].forEach(t => {
         document.getElementById("panel-" + t).classList.toggle("active", t === name);
         document.getElementById("tab-" + t).classList.toggle("active", t === name);
     });
@@ -2964,6 +3059,24 @@ function exportCSV() {
     });
 
 
+    csv += "\nMEETING GIFTS (SPEAKERS & RAFFLE)\n";
+    csv += "Date,Type,Given To,Wine,Wine Type,Bottles,Other Token,Meeting,Notes,Recorded By\n";
+    gifts.forEach(g => {
+        csv += [
+            g.date,
+            csvSafe(GIFT_KIND_LABEL[g.kind] || g.kind),
+            csvSafe(g.recipient),
+            csvSafe(g.wineName),
+            csvSafe(g.wineType),
+            Number(g.quantity || 0),
+            csvSafe(g.token),
+            csvSafe(g.meeting),
+            csvSafe(g.note),
+            csvSafe(g.recordedBy)
+        ].join(",") + "\n";
+    });
+
+
     const blob =
         new Blob(
             [csv],
@@ -3017,7 +3130,9 @@ function backupData() {
 
         inventory,
 
-        events
+        events,
+
+        gifts
 
     };
 
@@ -3105,7 +3220,7 @@ function googleSyncSave(silent) {
 
     withFreshToken(function () {
         try {
-            const encoded = encodeSyncPayload({ inventory, events, exportedAt: new Date().toISOString() });
+            const encoded = encodeSyncPayload({ inventory, events, gifts, exportedAt: new Date().toISOString() });
             const before = lastKnownSavedAt;
 
             // Normal form POST through a hidden iframe (avoids CORS limits with Apps Script).
@@ -3225,6 +3340,7 @@ function googleSyncLoad(silent) {
 
             inventory = data.inventory;
             events = data.events;
+            gifts = Array.isArray(data.gifts) ? data.gifts : [];
             dataLoaded = true;
             attachmentsLoaded = false;
             document.getElementById("loadBanner").style.display = "none";
@@ -3582,6 +3698,173 @@ function refresh() {
     updateDashboard();
     renderInventory();
     renderEvents();
+    renderGifts();
+}
+
+// ============================================================
+// MEETINGS: guest-speaker gifts & raffle prizes
+// ============================================================
+const GIFT_KIND_LABEL = { speaker: "Guest speaker", raffle: "Raffle prize" };
+
+function giftWineText(g) {
+    return g.wineName ? g.wineName + (g.wineType ? " (" + g.wineType + ")" : "") : "";
+}
+
+function updateGiftLabels() {
+    const raffle = document.getElementById("giftKind").value === "raffle";
+    document.getElementById("giftRecipientLabel").textContent = raffle ? "Raffle winner’s name" : "Speaker’s name";
+    document.getElementById("giftTitle").textContent = raffle ? "Record raffle prize" : "Record speaker gift";
+}
+
+function openGift(kind) {
+    if (!guardLoaded()) return;
+    document.getElementById("giftForm").reset();
+    document.getElementById("giftKind").value = kind === "raffle" ? "raffle" : "speaker";
+    document.getElementById("giftDate").value = today();
+    document.getElementById("giftBy").value = currentEmail;
+    document.getElementById("giftQty").value = 1;
+
+    const options = inventory
+        .filter(w => availableInStore(w) > 0)
+        .sort((a, b) => String(a.name).localeCompare(String(b.name)))
+        .map(w => `<option value="${w.id}">${escapeHTML(w.name)} — ${escapeHTML(w.type || "Other")}${w.donatedBy ? " — " + escapeHTML(w.donatedBy) : ""} (${availableInStore(w)} available)</option>`)
+        .join("");
+    document.getElementById("giftWine").innerHTML = `<option value="">No wine (other token only)</option>` + options;
+
+    updateGiftLabels();
+    openModal("giftModal");
+    setTimeout(() => document.getElementById("giftRecipient").focus(), 60);
+}
+
+document.getElementById("giftForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (!guardLoaded()) return;
+
+    const kind = document.getElementById("giftKind").value;
+    const date = document.getElementById("giftDate").value;
+    const recipient = document.getElementById("giftRecipient").value.trim();
+    const meeting = document.getElementById("giftMeeting").value.trim();
+    const wineId = Number(document.getElementById("giftWine").value) || 0;
+    const qty = wineId ? Number(document.getElementById("giftQty").value) : 0;
+    const token = document.getElementById("giftToken").value.trim();
+    const note = document.getElementById("giftNote").value.trim();
+
+    if (!recipient || !date) { toast("Please enter the date and the name of the person.", "err"); return; }
+    if (!wineId && !token) { toast("Choose a wine or write the other token that was given.", "err"); return; }
+
+    let wine = null;
+    if (wineId) {
+        wine = getWine(wineId);
+        if (!wine) { toast("Wine not found.", "err"); return; }
+        if (!Number.isInteger(qty) || qty < 1) { toast("Enter a whole number of bottles.", "err"); return; }
+        const available = availableInStore(wine);
+        if (qty > available) { toast(wine.name + " only has " + available + " available.", "err"); return; }
+        wine.totalUsed = Number(wine.totalUsed || 0) + qty;     // counts as used
+    }
+
+    gifts.push({
+        id: Date.now(),
+        kind, date, recipient, meeting, note,
+        wineId: wine ? wine.id : "",
+        wineName: wine ? wine.name : "",
+        wineType: wine ? wine.type : "",
+        quantity: wine ? qty : 0,
+        token,
+        recordedBy: currentEmail,
+        createdAt: new Date().toISOString()
+    });
+
+    saveData();
+    closeModal("giftModal");
+    refresh();
+    toast("Saved: " + (kind === "raffle" ? "raffle prize for " : "gift for ") + recipient + ".", "ok");
+});
+
+function renderGifts() {
+    const body = document.getElementById("giftTable");
+    if (!body) return;
+    const search = document.getElementById("giftSearch").value.trim().toLowerCase();
+    const filter = document.getElementById("giftFilter").value;
+
+    const list = gifts
+        .filter(g => (filter === "all" || g.kind === filter) &&
+            (!search || [g.recipient, g.meeting, g.wineName, g.token, g.note].join(" ").toLowerCase().includes(search)))
+        .sort((a, b) => String(b.date).localeCompare(String(a.date)) || Number(b.id) - Number(a.id));
+
+    const bottles = list.reduce((s, g) => s + Number(g.quantity || 0), 0);
+    document.getElementById("giftSummary").textContent =
+        "Showing " + list.length + " of " + gifts.length + " · " + plural(bottles, "bottle") + " given";
+
+    if (!list.length) {
+        body.innerHTML = `<tr><td colspan="9" class="empty"><b>${gifts.length ? "No records match" : "No meeting gifts recorded yet"}</b>
+            ${gifts.length ? "Try clearing the search or filter." : "Use “Speaker gift” or “Raffle prize” to record wine given at a meeting."}</td></tr>`;
+        return;
+    }
+
+    body.innerHTML = list.map(g => `<tr>
+        <td>${fmtDate(g.date)}</td>
+        <td><span class="pill ${g.kind === "raffle" ? "pill-warn" : "pill-blue"}">${escapeHTML(GIFT_KIND_LABEL[g.kind] || g.kind)}</span></td>
+        <td><div class="wname">${escapeHTML(g.recipient)}</div>${g.note ? `<div class="sub">${escapeHTML(g.note)}</div>` : ""}</td>
+        <td>${g.wineName ? escapeHTML(giftWineText(g)) : "—"}</td>
+        <td class="num">${Number(g.quantity || 0) || "—"}</td>
+        <td>${g.token ? escapeHTML(g.token) : "—"}</td>
+        <td class="hide-sm">${g.meeting ? escapeHTML(g.meeting) : "—"}</td>
+        <td class="hide-sm">${escapeHTML(g.recordedBy || "—")}</td>
+        <td class="write admin-only" style="text-align:right;"><button class="btn btn-sm btn-danger" type="button" onclick="deleteGift(${g.id})">Delete</button></td>
+    </tr>`).join("");
+}
+
+function deleteGift(id) {
+    if (!requireAdmin("Deleting a meeting record")) return;
+    if (!guardLoaded()) return;
+    const g = gifts.find(x => Number(x.id) === Number(id));
+    if (!g) return;
+    const back = Number(g.quantity || 0);
+    if (!confirm(`Delete this record for "${g.recipient}"?` + (back ? `\n\n${plural(back, "bottle")} will be added back to available stock.` : "") + "\n\nThis cannot be undone.")) return;
+
+    if (back && g.wineId) {
+        const wine = getWine(g.wineId);
+        if (wine) wine.totalUsed = Math.max(0, Number(wine.totalUsed || 0) - back);
+    }
+    gifts = gifts.filter(x => Number(x.id) !== Number(id));
+    saveData();
+    refresh();
+    toast("Record deleted.");
+}
+
+function printGiftsReport() {
+    const sorted = gifts.slice().sort((a, b) => String(a.date).localeCompare(String(b.date)));
+    const total = sorted.reduce((s, g) => s + Number(g.quantity || 0), 0);
+    const rows = sorted.map(g => `<tr>
+        <td>${escapeHTML(g.date)}</td>
+        <td>${escapeHTML(GIFT_KIND_LABEL[g.kind] || g.kind)}</td>
+        <td><strong>${escapeHTML(g.recipient)}</strong></td>
+        <td>${escapeHTML(giftWineText(g)) || "-"}</td>
+        <td>${Number(g.quantity || 0) || "-"}</td>
+        <td>${escapeHTML(g.token || "-")}</td>
+        <td>${escapeHTML(g.meeting || "-")}</td>
+        <td>${escapeHTML(g.recordedBy || "-")}</td>
+    </tr>`).join("");
+
+    const w = window.open("", "_blank", "width=1200,height=850");
+    if (!w) { toast("Please allow pop-ups to print the report.", "err"); return; }
+    w.document.write(`<!DOCTYPE html><html><head><title>Meetings Gifts Report</title>${printStyles()}</head><body>
+        ${printHeader("MEETINGS GIFTS REPORT – SPEAKERS & RAFFLE")}
+        <div class="summary">
+            <div class="summary-box">Records<strong>${sorted.length}</strong></div>
+            <div class="summary-box">Speaker gifts<strong>${sorted.filter(g => g.kind === "speaker").length}</strong></div>
+            <div class="summary-box">Raffle prizes<strong>${sorted.filter(g => g.kind === "raffle").length}</strong></div>
+            <div class="summary-box">Bottles given<strong>${total}</strong></div>
+        </div>
+        <table><thead><tr><th>Date</th><th>Type</th><th>Given to</th><th>Wine</th><th>Bottles</th><th>Other token</th><th>Meeting</th><th>Recorded by</th></tr></thead>
+        <tbody>${rows || `<tr><td colspan="8">No records.</td></tr>`}</tbody></table>
+        <div class="three-signatures">
+            <div class="signature">Prepared By</div><div class="signature">Checked By</div><div class="signature">Approved By</div>
+        </div>
+        <p style="margin-top:35px">Report Generated: ${new Date().toLocaleString()}</p>
+        <script>window.onload = function() { window.print(); };<\/script>
+    </body></html>`);
+    w.document.close();
 }
 
 // ============================================================
