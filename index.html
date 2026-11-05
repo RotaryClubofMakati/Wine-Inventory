@@ -748,7 +748,7 @@ function applyMode() {
         loggedIn ? (currentEmail || "Signed in") + " · " + label : "Not signed in";
 }
 
-function showPortalStatus(message, isError, showPortalButton) {
+function showPortalStatus(message, isError, showPortalButton, showRetry) {
     const el = document.getElementById("portalStatus");
     if (!el) return;
     el.className = "portal-status" + (isError ? " bad" : "");
@@ -761,6 +761,15 @@ function showPortalStatus(message, isError, showPortalButton) {
         a.textContent = "Open the portal";
         el.appendChild(document.createElement("br"));
         el.appendChild(a);
+    }
+    if (showRetry) {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "btn btn-primary";
+        b.textContent = "Try again";
+        b.onclick = function () { showPortalStatus("Loading…"); googleSyncLoad(true); };
+        el.appendChild(document.createElement("br"));
+        el.appendChild(b);
     }
 }
 
@@ -3162,6 +3171,7 @@ function googleSyncLoad(silent) {
     }
 
     setSync("busy", "Loading…");
+    if (!dataLoaded) setTimeout(() => { if (!dataLoaded && !finished) showPortalStatus("Still loading… this is taking longer than usual."); }, 6000);
 
     // JSONP avoids CORS restrictions on a static page.
     const callbackName = "googleSyncCallback_" + Date.now() + "_" + Math.floor(Math.random() * 100000);
@@ -3176,7 +3186,10 @@ function googleSyncLoad(silent) {
 
     const fail = (message) => {
         setSync("err", "Offline – tap to retry");
-        if (!dataLoaded) document.getElementById("loadBanner").style.display = "flex";
+        if (!dataLoaded) {
+            document.getElementById("loadBanner").style.display = "flex";
+            showPortalStatus(message, true, false, true);
+        }
         if (!silent) toast(message, "err");
     };
 
