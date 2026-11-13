@@ -520,7 +520,7 @@ body:not(.is-admin) .admin-only { display: none !important; }
                             <th>Other token / gift</th>
                             <th class="hide-sm">Meeting</th>
                             <th class="hide-sm">Recorded by</th>
-                            <th class="write admin-only"></th>
+                            <th class="write"></th>
                         </tr>
                     </thead>
                     <tbody id="giftTable"></tbody>
@@ -674,7 +674,7 @@ body:not(.is-admin) .admin-only { display: none !important; }
             </div>
             <div class="modal-foot">
                 <button type="button" class="btn" onclick="closeModal('giftModal')">Cancel</button>
-                <button type="submit" class="btn btn-primary">Save record</button>
+                <button type="submit" class="btn btn-primary" id="giftSubmit">Save record</button>
             </div>
         </form>
     </div>
@@ -3671,23 +3671,62 @@ function giftWineText(g) {
 function updateGiftLabels() {
     const raffle = document.getElementById("giftKind").value === "raffle";
     document.getElementById("giftRecipientLabel").textContent = raffle ? "Raffle winner’s name" : "Speaker’s name";
-    document.getElementById("giftTitle").textContent = raffle ? "Record raffle prize" : "Record speaker gift";
+    const editing = editingGiftId !== null;
+    document.getElementById("giftTitle").textContent =
+        (editing ? "Edit " : "Record ") + (raffle ? "raffle prize" : "speaker gift");
+}
+
+let editingGiftId = null;
+
+function giftWineOptions(selectedId, extraQty) {
+    // When editing, the bottles already given in this record count as available again.
+    return inventory
+        .filter(w => availableInStore(w) + (Number(w.id) === Number(selectedId) ? extraQty : 0) > 0)
+        .sort((a, b) => String(a.name).localeCompare(String(b.name)))
+        .map(w => {
+            const avail = availableInStore(w) + (Number(w.id) === Number(selectedId) ? extraQty : 0);
+            return `<option value="${w.id}">${escapeHTML(w.name)} — ${escapeHTML(w.type || "Other")}${w.donatedBy ? " — " + escapeHTML(w.donatedBy) : ""} (${avail} available)</option>`;
+        })
+        .join("");
 }
 
 function openGift(kind) {
     if (!guardLoaded()) return;
+    editingGiftId = null;
     document.getElementById("giftForm").reset();
     document.getElementById("giftKind").value = kind === "raffle" ? "raffle" : "speaker";
     document.getElementById("giftDate").value = today();
     document.getElementById("giftBy").value = currentEmail;
     document.getElementById("giftQty").value = 1;
+    document.getElementById("giftWine").innerHTML = `<option value="">No wine (other token only)</option>` + giftWineOptions(null, 0);
+    document.getElementById("giftSubmit").textContent = "Save record";
 
-    const options = inventory
-        .filter(w => availableInStore(w) > 0)
-        .sort((a, b) => String(a.name).localeCompare(String(b.name)))
-        .map(w => `<option value="${w.id}">${escapeHTML(w.name)} — ${escapeHTML(w.type || "Other")}${w.donatedBy ? " — " + escapeHTML(w.donatedBy) : ""} (${availableInStore(w)} available)</option>`)
-        .join("");
-    document.getElementById("giftWine").innerHTML = `<option value="">No wine (other token only)</option>` + options;
+    updateGiftLabels();
+    openModal("giftModal");
+    setTimeout(() => document.getElementById("giftRecipient").focus(), 60);
+}
+
+function editGift(id) {
+    if (!guardLoaded()) return;            // view-only accounts are stopped here too
+    const g = gifts.find(x => Number(x.id) === Number(id));
+    if (!g) return;
+
+    editingGiftId = g.id;
+    document.getElementById("giftForm").reset();
+    document.getElementById("giftKind").value = g.kind === "raffle" ? "raffle" : "speaker";
+    document.getElementById("giftDate").value = g.date || today();
+    document.getElementById("giftRecipient").value = g.recipient || "";
+    document.getElementById("giftMeeting").value = g.meeting || "";
+    document.getElementById("giftToken").value = g.token || "";
+    document.getElementById("giftNote").value = g.note || "";
+    document.getElementById("giftBy").value = g.recordedBy || currentEmail;
+
+    const oldQty = Number(g.quantity || 0);
+    document.getElementById("giftWine").innerHTML =
+        `<option value="">No wine (other token only)</option>` + giftWineOptions(g.wineId, oldQty);
+    document.getElementById("giftWine").value = g.wineId ? String(g.wineId) : "";
+    document.getElementById("giftQty").value = oldQty || 1;
+    document.getElementById("giftSubmit").textContent = "Save changes";
 
     updateGiftLabels();
     openModal("giftModal");
@@ -3710,14 +3749,45 @@ document.getElementById("giftForm").addEventListener("submit", function (e) {
     if (!recipient || !date) { toast("Please enter the date and the name of the person.", "err"); return; }
     if (!wineId && !token) { toast("Choose a wine or write the other token that was given.", "err"); return; }
 
+    const existing = editingGiftId !== null ? gifts.find(x => Number(x.id) === Number(editingGiftId)) : null;
+    if (editingGiftId !== null && !existing) { toast("That record no longer exists.", "err"); closeModal("giftModal"); return; }
+    const oldQty = existing ? Number(existing.quantity || 0) : 0;
+    const oldWineId = existing && existing.wineId ? Number(existing.wineId) : 0;
+
     let wine = null;
     if (wineId) {
         wine = getWine(wineId);
         if (!wine) { toast("Wine not found.", "err"); return; }
         if (!Number.isInteger(qty) || qty < 1) { toast("Enter a whole number of bottles.", "err"); return; }
-        const available = availableInStore(wine);
+        // Bottles this same record already took out of stock are available to it again.
+        const available = availableInStore(wine) + (oldWineId === Number(wine.id) ? oldQty : 0);
         if (qty > available) { toast(wine.name + " only has " + available + " available.", "err"); return; }
-        wine.totalUsed = Number(wine.totalUsed || 0) + qty;     // counts as used
+    }
+
+    // All checks passed: now change the stock counts.
+    if (existing && oldWineId && oldQty) {
+        const oldWine = getWine(oldWineId);
+        if (oldWine) oldWine.totalUsed = Math.max(0, Number(oldWine.totalUsed || 0) - oldQty);
+    }
+    if (wine) wine.totalUsed = Number(wine.totalUsed || 0) + qty;     // counts as used
+
+    if (existing) {
+        Object.assign(existing, {
+            kind, date, recipient, meeting, note,
+            wineId: wine ? wine.id : "",
+            wineName: wine ? wine.name : "",
+            wineType: wine ? wine.type : "",
+            quantity: wine ? qty : 0,
+            token,
+            editedBy: currentEmail,
+            editedAt: new Date().toISOString()
+        });
+        editingGiftId = null;
+        saveData();
+        closeModal("giftModal");
+        refresh();
+        toast("Record updated for " + recipient + ".", "ok");
+        return;
     }
 
     gifts.push({
@@ -3767,8 +3837,11 @@ function renderGifts() {
         <td class="num">${Number(g.quantity || 0) || "—"}</td>
         <td>${g.token ? escapeHTML(g.token) : "—"}</td>
         <td class="hide-sm">${g.meeting ? escapeHTML(g.meeting) : "—"}</td>
-        <td class="hide-sm">${escapeHTML(g.recordedBy || "—")}</td>
-        <td class="write admin-only" style="text-align:right;"><button class="btn btn-sm btn-danger" type="button" onclick="deleteGift(${g.id})">Delete</button></td>
+        <td class="hide-sm">${escapeHTML(g.recordedBy || "—")}${g.editedBy ? `<div class="sub">edited by ${escapeHTML(g.editedBy)}</div>` : ""}</td>
+        <td class="write" style="text-align:right; white-space:nowrap;">
+            <button class="btn btn-sm" type="button" onclick="editGift(${g.id})">✏️ Edit</button>
+            <button class="btn btn-sm btn-danger admin-only" type="button" onclick="deleteGift(${g.id})">Delete</button>
+        </td>
     </tr>`).join("");
 }
 
