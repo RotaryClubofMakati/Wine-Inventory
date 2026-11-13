@@ -549,7 +549,7 @@ body:not(.is-admin) .admin-only { display: none !important; }
                 </div>
                 <div class="btn-row">
                     <button class="btn" type="button" onclick="reportAction('usage')">🍷 Usage report</button>
-                    <button class="btn" type="button" onclick="reportAction('receiving')">🖨️ Receiving copy</button>
+                    <button class="btn" type="button" onclick="reportAction('receiving')">🖨️ Receiving &amp; return form</button>
                     <button class="btn" type="button" onclick="reportAction('final')">📄 Final report</button>
                     <button class="btn" type="button" onclick="reportAction('attachment')">📎 View attached copy</button>
                 </div>
@@ -723,9 +723,9 @@ body:not(.is-admin) .admin-only { display: none !important; }
         <div class="modal-body">
             <p style="margin-top:0;">The wine is now set aside for <b id="nextEventName"></b>. To document the release:</p>
             <div class="next-steps">
-                <div class="row"><div class="n">1</div><div><b>Print the receiving copy</b><div class="sub">Have the receiver sign it when the wine is handed over.</div></div><button class="btn btn-sm btn-primary" type="button" onclick="printReceiving(nextEventId)">🖨️ Print</button></div>
-                <div class="row"><div class="n">2</div><div><b>Attach the signed copy</b><div class="sub">Scan or take a photo, then upload it to the event (PDF, JPG, PNG).</div></div><button class="btn btn-sm" type="button" onclick="closeModal('nextModal'); attachReceivingForm(nextEventId)">📎 Attach</button></div>
-                <div class="row"><div class="n">3</div><div><b>After the event, enter usage</b><div class="sub">Open the Events tab and press “Enter usage”.</div></div></div>
+                <div class="row"><div class="n">1</div><div><b>Print the receiving &amp; return form</b><div class="sub">The receiver signs Part 1 at hand-over. The same form is used for used and returned bottles after the event.</div></div><button class="btn btn-sm btn-primary" type="button" onclick="printReceiving(nextEventId)">🖨️ Print</button></div>
+                <div class="row"><div class="n">2</div><div><b>Attach the signed copy</b><div class="sub">After the event, once Part 2 is signed, scan or photo it and upload it (PDF, JPG, PNG).</div></div><button class="btn btn-sm" type="button" onclick="closeModal('nextModal'); attachReceivingForm(nextEventId)">📎 Attach</button></div>
+                <div class="row"><div class="n">3</div><div><b>After the event, enter usage</b><div class="sub">Open the Events tab and press “Enter usage”. Unused bottles are returned to stock.</div></div></div>
             </div>
         </div>
         <div class="modal-foot"><button class="btn" type="button" onclick="closeModal('nextModal')">Done for now</button></div>
@@ -1577,7 +1577,7 @@ function renderEvents() {
             </div>
 
             <div class="event-actions">
-                <button class="btn btn-sm" type="button" onclick="printReceiving(${ev.id})">🖨️ Receiving copy</button>
+                <button class="btn btn-sm" type="button" onclick="printReceiving(${ev.id})">🖨️ Receiving &amp; return form</button>
                 ${attachButton}
                 ${copyButtons}
                 ${open ? `<button class="btn btn-sm btn-primary write" type="button" onclick="openUsage(${ev.id})">🍷 Enter usage</button>` : ""}
@@ -1891,197 +1891,155 @@ function printStyles() {
 
 function printReceiving(id) {
 
-    const event =
-        events.find(
-            item => Number(item.id) === Number(id)
-        );
-
-
+    const event = events.find(item => Number(item.id) === Number(id));
     if (!event) return;
 
+    const finalized = event.status === "finalized";
+    const blank = '<span class="fill"></span>';
 
-    let rows = "";
+    // One form for the whole life of the event:
+    // released -> actually received -> used -> returned.
+    // Used / Returned are pre-filled if the event is already finalized,
+    // otherwise they are left blank to be written in by hand after the event.
+    let totalPrepared = 0, totalUsed = 0, totalReturned = 0;
 
+    const rows = (event.items || []).map(item => {
+        const prepared = Number(item.prepared || 0);
+        totalPrepared += prepared;
 
-    event.items.forEach(item => {
+        let usedCell = blank, returnedCell = blank;
+        if (finalized) {
+            const used = Number(item.used || 0);
+            const returned = Number(item.returned != null && item.returned !== "" ? item.returned : prepared - used);
+            totalUsed += used;
+            totalReturned += returned;
+            usedCell = "<strong>" + used + "</strong>";
+            returnedCell = "<strong>" + returned + "</strong>";
+        }
 
-        rows += `
+        return `<tr>
+            <td>${escapeHTML(item.wineName)}</td>
+            <td>${escapeHTML(item.wineType || "")}</td>
+            <td class="c"><strong>${prepared}</strong></td>
+            <td class="c">${blank}</td>
+            <td class="c">${usedCell}</td>
+            <td class="c">${returnedCell}</td>
+            <td>${escapeHTML(item.note || "")}</td>
+        </tr>`;
+    }).join("");
 
+    const totalsRow = `<tr class="totals">
+        <td colspan="2" style="text-align:right;"><strong>TOTAL BOTTLES</strong></td>
+        <td class="c"><strong>${totalPrepared}</strong></td>
+        <td class="c">${blank}</td>
+        <td class="c">${finalized ? "<strong>" + totalUsed + "</strong>" : blank}</td>
+        <td class="c">${finalized ? "<strong>" + totalReturned + "</strong>" : blank}</td>
+        <td></td>
+    </tr>`;
+
+    const w = window.open("", "_blank", "width=1000,height=800");
+    if (!w) { toast("Please allow pop-ups to print the form.", "err"); return; }
+
+    w.document.write(`<!DOCTYPE html>
+<html>
+<head>
+    <title>Wine Receiving &amp; Return Form - ${escapeHTML(event.eventName)}</title>
+    ${printStyles()}
+    <style>
+        td.c, th.c { text-align: center; }
+        .fill { display: inline-block; min-width: 56px; height: 20px; border-bottom: 1px solid #222; }
+        tr.totals td { background: #f5f7fa; }
+        .section-note { font-size: 11px; color: #555; margin: 6px 0 0; }
+        .part-title { margin: 22px 0 4px; color: #1f4e91; font-size: 13px; }
+        .sig-line { margin-top: 38px; }
+        .sig-name { margin-top: 4px; font-size: 11px; color: #555; }
+        .sig-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 30px; }
+    </style>
+</head>
+<body>
+
+    ${printHeader("WINE RECEIVING &amp; RETURN FORM")}
+
+    <div class="event-info">
+        <div class="info-box"><strong>Event:</strong> ${escapeHTML(event.eventName)}</div>
+        <div class="info-box"><strong>Event Date:</strong> ${escapeHTML(event.eventDate)}</div>
+        <div class="info-box"><strong>Prepared By:</strong> ${escapeHTML(event.preparedBy || "")}</div>
+        <div class="info-box"><strong>Received By:</strong> ${escapeHTML(event.receivedBy || "") || "______________________"}</div>
+    </div>
+
+    <table>
+        <thead>
             <tr>
-
-                <td>
-                    ${escapeHTML(item.wineName)}
-                </td>
-
-                <td>
-                    ${escapeHTML(item.wineType)}
-                </td>
-
-                <td>
-                    <strong>
-                        ${item.prepared}
-                    </strong>
-                </td>
-
-                <td>
-                    ${item.prepared}
-                </td>
-
-                <td>
-                    ${escapeHTML(item.note || "")}
-                </td>
-
+                <th>Wine</th>
+                <th>Type</th>
+                <th class="c">Qty Released</th>
+                <th class="c">Qty Actually Received</th>
+                <th class="c">Qty Used</th>
+                <th class="c">Qty Returned</th>
+                <th>Notes</th>
             </tr>
+        </thead>
+        <tbody>
+            ${rows}
+            ${totalsRow}
+        </tbody>
+    </table>
+    <p class="section-note">
+        Released = bottles issued by the custodian. Actually Received = bottles counted by the receiver at hand-over.
+        Used and Returned are filled in after the event (Released = Used + Returned).
+    </p>
 
-        `;
+    <h3 class="part-title">PART 1 &ndash; RECEIVING (at hand-over)</h3>
+    <p style="margin:0;">
+        I confirm that I have received the wine quantities listed above for this event.
+    </p>
 
-    });
+    <div class="sig-grid">
+        <div class="signature sig-line">
+            Released By (Custodian)<br>
+            <strong>${escapeHTML(event.preparedBy || "")}</strong>
+            <div class="sig-name">Signature / Date</div>
+        </div>
+        <div class="signature sig-line">
+            Received By (Waiter / Receiver)<br>
+            <strong>${escapeHTML(event.receivedBy || "")}</strong>
+            <div class="sig-name">Signature / Date</div>
+        </div>
+        <div></div>
+    </div>
 
+    <h3 class="part-title">PART 2 &ndash; USAGE &amp; RETURN (after the event)</h3>
+    <p style="margin:0;">
+        I confirm that the Qty Used and Qty Returned above are correct, and that the unused bottles
+        have been returned to the inventory custodian.
+    </p>
 
-    const w =
-        window.open(
-            "",
-            "_blank",
-            "width=1000,height=800"
-        );
+    <div class="sig-grid">
+        <div class="signature sig-line">
+            Returned By (Waiter / Receiver)
+            <div class="sig-name">Signature / Date</div>
+        </div>
+        <div class="signature sig-line">
+            Returns Received By (Custodian)
+            <div class="sig-name">Signature / Date</div>
+        </div>
+        <div class="signature sig-line">
+            Checked By
+            <div class="sig-name">Signature / Date</div>
+        </div>
+    </div>
 
+    <p style="margin-top:30px; font-size:11px; color:#555;">
+        Keep this one form for the whole event: print it before the event, sign Part 1 at hand-over,
+        sign Part 2 when the leftover wine is returned, then attach the signed copy in the system.
+    </p>
 
-    w.document.write(`
-
-        <!DOCTYPE html>
-
-        <html>
-
-        <head>
-
-            <title>
-                Wine Receiving Form - ${escapeHTML(event.eventName)}
-            </title>
-
-            ${printStyles()}
-
-        </head>
-
-        <body>
-
-            ${printHeader("WINE EVENT RECEIVING FORM")}
-
-
-            <div class="event-info">
-
-                <div class="info-box">
-                    <strong>Event:</strong>
-                    ${escapeHTML(event.eventName)}
-                </div>
-
-                <div class="info-box">
-                    <strong>Event Date:</strong>
-                    ${event.eventDate}
-                </div>
-
-                <div class="info-box">
-                    <strong>Prepared By:</strong>
-                    ${escapeHTML(event.preparedBy)}
-                </div>
-
-                <div class="info-box">
-                    <strong>Received By:</strong>
-                    ${escapeHTML(event.receivedBy || "")}
-                </div>
-
-            </div>
-
-
-            <table>
-
-                <thead>
-
-                    <tr>
-
-                        <th>Wine</th>
-                        <th>Type</th>
-                        <th>Qty Prepared</th>
-                        <th>Qty Issued</th>
-                        <th>Qty Actually Received</th>
-                        <th>Notes</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    ${rows}
-
-                </tbody>
-
-            </table>
-
-
-            <p>
-                <strong>Receiving Confirmation:</strong>
-            </p>
-
-            <p>
-                I confirm that I have received the wine quantities
-                listed above for this event.
-            </p>
-
-
-            <div class="signature-area">
-
-                <div class="signature">
-
-                    Prepared By<br>
-                    <strong>
-                        ${escapeHTML(event.preparedBy)}
-                    </strong>
-
-                </div>
-
-
-
-            </div>
-
-
-            <div class="signature-area">
-
-                <div class="signature">
-                    Signature / Date
-                </div>
-
-                <div class="signature">
-                    Signature / Date
-                </div>
-
-            </div>
-
-
-            <p style="margin-top:40px">
-
-                <strong>After Event:</strong>
-                Please return this form to the inventory
-                custodian after recording actual wine usage.
-
-            </p>
-
-
-            <script>
-
-                window.onload = function() {
-                    window.print();
-                };
-
-            <\/script>
-
-        
+    <script>
+        window.onload = function() { window.print(); };
+    <\/script>
 
 </body>
-
-        </html>
-
-    `);
-
+</html>`);
 
     w.document.close();
 
